@@ -1,55 +1,80 @@
 from pathlib import Path
 from typing import Any, Dict
 
-from pm4py.read import read_ocel
+import pandas as pd
 
 
-def load_ocel_file(file_path: str) -> Any:
+def load_ocel_tables(data_dir: str) -> Dict[str, pd.DataFrame]:
     """
-    Load an OCEL file from the given path.
+    Load OCEL tables from a folder containing:
+    - events.csv
+    - objects.csv
+    - relations.csv
     """
-    path = Path(file_path)
+    base_path = Path(data_dir)
 
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {file_path}")
+    events_path = base_path / "events.csv"
+    objects_path = base_path / "objects.csv"
+    relations_path = base_path / "relations.csv"
 
-    ocel = read_ocel(str(path))
-    return ocel
+    required_files = [events_path, objects_path, relations_path]
+    missing_files = [str(file) for file in required_files if not file.exists()]
 
+    if missing_files:
+        raise FileNotFoundError(f"Missing required files: {missing_files}")
 
-def summarize_ocel(ocel: Any) -> Dict[str, Any]:
-    """
-    Return a basic summary of the OCEL object.
-    """
-    events_count = len(ocel.events)
-    objects_count = len(ocel.objects)
-
-    activity_count = ocel.events["ocel:activity"].nunique()
-    object_types = sorted(
-        ocel.objects["ocel:type"].dropna().unique().tolist()
-    )
+    events_df = pd.read_csv(events_path)
+    objects_df = pd.read_csv(objects_path)
+    relations_df = pd.read_csv(relations_path)
 
     return {
-        "events_count": events_count,
-        "objects_count": objects_count,
-        "activity_count": activity_count,
-        "object_types": object_types,
+        "events": events_df,
+        "objects": objects_df,
+        "relations": relations_df,
     }
 
 
+def summarize_ocel_tables(ocel_tables: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
+    """
+    Return a basic summary of the OCEL tables.
+    """
+    events_df = ocel_tables["events"]
+    objects_df = ocel_tables["objects"]
+    relations_df = ocel_tables["relations"]
+
+    summary = {
+        "events_count": len(events_df),
+        "objects_count": len(objects_df),
+        "relations_count": len(relations_df),
+        "activity_count": events_df["ocel:activity"].nunique(),
+        "activities": sorted(events_df["ocel:activity"].dropna().unique().tolist()),
+        "object_types": sorted(objects_df["ocel:type"].dropna().unique().tolist()),
+    }
+
+    return summary
+
+
+def print_summary(summary: Dict[str, Any]) -> None:
+    """
+    Print a readable summary of the OCEL tables.
+    """
+    print("OCEL summary")
+    print("-------------------")
+    print(f"Events: {summary['events_count']}")
+    print(f"Objects: {summary['objects_count']}")
+    print(f"Relations: {summary['relations_count']}")
+    print(f"Activity count: {summary['activity_count']}")
+    print(f"Activities: {summary['activities']}")
+    print(f"Object types: {summary['object_types']}")
+
+
 if __name__ == "__main__":
-    sample_path = "data/sample_ocel.jsonocel"
+    sample_dir = "data/p2p_sample"
 
     try:
-        ocel = load_ocel_file(sample_path)
-        summary = summarize_ocel(ocel)
-
-        print("OCEL summary")
-        print("-------------------")
-        print(f"Events: {summary['events_count']}")
-        print(f"Objects: {summary['objects_count']}")
-        print(f"Activities: {summary['activity_count']}")
-        print(f"Object types: {summary['object_types']}")
+        ocel_tables = load_ocel_tables(sample_dir)
+        summary = summarize_ocel_tables(ocel_tables)
+        print_summary(summary)
 
     except Exception as e:
         print(f"Error: {e}")
