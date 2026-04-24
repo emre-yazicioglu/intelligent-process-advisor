@@ -1,0 +1,5 @@
+ocel:oid,ocel:type
+po1,purchase_order
+item1,item
+gr1,goods_receipt
+inv1,invoice

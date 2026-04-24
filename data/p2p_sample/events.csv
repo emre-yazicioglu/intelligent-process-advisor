@@ -1,0 +1,9 @@
+ocel:eid,ocel:activity,ocel:timestamp
+e1,Create Purchase Order,2026-04-01 09:00:00
+e2,Approve Purchase Order,2026-04-01 10:00:00
+e3,Send Purchase Order,2026-04-01 11:00:00
+e4,Receive Goods,2026-04-02 09:00:00
+e5,Record Goods Receipt,2026-04-02 10:00:00
+e6,Receive Invoice,2026-04-03 09:00:00
+e7,Match Invoice,2026-04-03 11:00:00
+e8,Pay Invoice,2026-04-04 15:00:00
