@@ -93,11 +93,17 @@ def extract_activity_object_features(
         how="left",
     )
 
-    activity_object_types = (
-        merged.groupby(ACTIVITY)[OBJECT_TYPE]
-        .apply(lambda values: sorted(values.dropna().unique().tolist()))
-        .to_dict()
+    activity_object_types = {
+    activity: object_types
+    for activity, object_types in sorted(
+        (
+            merged.groupby(ACTIVITY)[OBJECT_TYPE]
+            .apply(lambda values: sorted(values.dropna().unique().tolist()))
+            .to_dict()
+            .items()
+        )
     )
+    }
 
     activity_object_type_qualifiers = {}
 
@@ -108,6 +114,19 @@ def extract_activity_object_features(
         activity_object_type_qualifiers[activity][object_type] = sorted(
             qualifiers.dropna().unique().tolist()
         )
+
+    activity_object_type_qualifiers = {
+        activity: {
+            object_type: qualifiers
+            for object_type, qualifiers in sorted(object_dict.items())
+        }
+        for activity, object_dict in sorted(activity_object_type_qualifiers.items())
+    }
+
+    return ActivityObjectFeatures(
+        activity_object_types=activity_object_types,
+        activity_object_type_qualifiers=activity_object_type_qualifiers,
+    )
 
     return ActivityObjectFeatures(
         activity_object_types=activity_object_types,
