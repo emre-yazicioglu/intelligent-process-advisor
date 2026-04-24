@@ -44,28 +44,28 @@ def build_p2p_ocel() -> OCEL:
     # This is the core of object-centric modeling
     # --------------------------------------------------
     relations = pd.DataFrame([
-        # Purchase Order lifecycle
-        {"ocel:eid": "e1", "ocel:oid": "po1", "ocel:type": "purchase_order"},
-        {"ocel:eid": "e2", "ocel:oid": "po1", "ocel:type": "purchase_order"},
-        {"ocel:eid": "e3", "ocel:oid": "po1", "ocel:type": "purchase_order"},
+    # Purchase Order lifecycle
+    {"ocel:eid": "e1", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "primary"},
+    {"ocel:eid": "e2", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "primary"},
+    {"ocel:eid": "e3", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "primary"},
 
-        # Goods receipt linked to PO and item
-        {"ocel:eid": "e4", "ocel:oid": "po1", "ocel:type": "purchase_order"},
-        {"ocel:eid": "e4", "ocel:oid": "item1", "ocel:type": "item"},
+    # Goods receipt linked to PO and item
+    {"ocel:eid": "e4", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "reference"},
+    {"ocel:eid": "e4", "ocel:oid": "item1", "ocel:type": "item", "ocel:qualifier": "primary"},
 
-        # Recording goods receipt linked to GR and PO
-        {"ocel:eid": "e5", "ocel:oid": "gr1", "ocel:type": "goods_receipt"},
-        {"ocel:eid": "e5", "ocel:oid": "po1", "ocel:type": "purchase_order"},
+    # Recording goods receipt linked to GR and PO
+    {"ocel:eid": "e5", "ocel:oid": "gr1", "ocel:type": "goods_receipt", "ocel:qualifier": "primary"},
+    {"ocel:eid": "e5", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "reference"},
 
-        # Invoice lifecycle
-        {"ocel:eid": "e6", "ocel:oid": "inv1", "ocel:type": "invoice"},
+    # Invoice lifecycle
+    {"ocel:eid": "e6", "ocel:oid": "inv1", "ocel:type": "invoice", "ocel:qualifier": "primary"},
 
-        # Matching invoice with PO
-        {"ocel:eid": "e7", "ocel:oid": "po1", "ocel:type": "purchase_order"},
-        {"ocel:eid": "e7", "ocel:oid": "inv1", "ocel:type": "invoice"},
+    # Matching invoice with PO
+    {"ocel:eid": "e7", "ocel:oid": "po1", "ocel:type": "purchase_order", "ocel:qualifier": "reference"},
+    {"ocel:eid": "e7", "ocel:oid": "inv1", "ocel:type": "invoice", "ocel:qualifier": "primary"},
 
-        # Payment linked only to invoice
-        {"ocel:eid": "e8", "ocel:oid": "inv1", "ocel:type": "invoice"},
+    # Payment linked only to invoice
+    {"ocel:eid": "e8", "ocel:oid": "inv1", "ocel:type": "invoice", "ocel:qualifier": "primary"},
     ])
 
     # --------------------------------------------------
