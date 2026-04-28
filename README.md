@@ -2,46 +2,73 @@
 
 From process mining to automation decisions.
 
-Agentic AI-powered system that analyzes object-centric event logs and generates structured automation recommendations across RPA, AI, and human-in-the-loop.
+An AI-augmented Process Intelligence system that analyzes object-centric event logs, provides advanced process analytics and interactive insights, and enables intelligent automation decision support across RPA, AI, and human-in-the-loop.
 
 ---
 
 ## Overview
 
-Process mining provides visibility into processes, but it does not answer a critical question:
+Process mining provides powerful visibility into processes.
 
-**Where and how should automation be applied?**
+However, there is still a critical gap:
 
-Intelligent Process Advisor is a system that combines object-centric process intelligence with AI-based decision logic to generate structured and explainable automation recommendations.
+**How do we move from understanding processes to making structured, confident automation decisions?**
 
-The focus is not on dashboards, but on decision-making.
+Intelligent Process Advisor extends process mining with a new layer of decision intelligence.
 
-This project is built on the principle that process intelligence should be owned and structured independently, before being operationalized through execution platforms such as RPA or AI tools.
+It combines:
+
+- object-centric process understanding  
+- structured analytical signals  
+- AI-assisted reasoning  
+
+to transform process data into clear, explainable recommendations.
+
+The goal is not only to understand processes, but to guide what should happen next.
 
 ---
 
-## Current Working Prototype
+## What This System Does
 
-The current implementation provides a lightweight Process Intelligence pipeline:
+The system is designed to:
+
+- analyze object-centric process data (OCEL)  
+- understand how activities interact with business objects  
+- detect structural complexity and interaction patterns  
+- identify potential weaknesses in the process  
+- generate structured insights  
+- support automation decisions across:
+  - Agentic AI  
+  - RPA  
+  - Human-in-the-loop  
+  - Process redesign  
+
+The output is not just analysis, but **decision-oriented intelligence**.
+
+---
+
+## Current Implementation
+
+The current prototype focuses on building the analytical foundation of the system.
+
+Implemented so far:
+
+- OCEL-style data ingestion from CSV  
+- activity → object relationship extraction  
+- interaction pattern classification  
+- basic insight generation  
+- structured JSON output  
+
+Current pipeline:
 
 ```
 OCEL CSV
 → ingestion
 → activity-object feature extraction
-→ activity interaction pattern classification
-→ business insight generation
-→ JSON export
+→ interaction pattern classification
+→ insight generation
+→ structured output
 ```
-
-This allows fast discovery of process structure and potential automation signals without requiring heavy enterprise tools.
-
-### What It Does Today
-
-- Loads OCEL-style CSV data  
-- Extracts activity → object relationships  
-- Identifies interaction patterns (join points, item-level activities, etc.)  
-- Generates structured process insights  
-- Exports results as machine-readable JSON  
 
 Example output:
 
@@ -57,87 +84,80 @@ Example output:
 
 ---
 
-## Problem
+## Target Product Experience
 
-In most organizations:
+The intended system is not a command-line tool, but an interactive intelligence layer.
 
-* Process mining identifies bottlenecks and inefficiencies  
-* Automation opportunities are still unclear  
-* Decisions are often subjective or tool-driven  
-* There is limited transparency behind automation choices  
+Target user flow:
 
-In addition, many approaches:
+```
+Upload process data (OCEL / CSV)
+→ automatically analyze process structure
+→ view insights in a dashboard
+→ interact with AI (ask questions)
+→ receive automation recommendations
+```
 
-* Rely on case-centric assumptions  
-* Ignore object interactions  
-* Apply AI without a solid process understanding  
+Example questions:
 
----
-
-## Solution
-
-This project builds a system that:
-
-* Ingests Object-Centric Event Logs (OCEL)  
-* Performs process analysis using PM4Py  
-* Evaluates each activity using a structured decision model  
-
-Classifies automation suitability into:
-
-* Agentic AI  
-* RPA  
-* Human-in-the-loop  
-* Process redesign required  
-
-Produces explainable recommendations.
+- Where are the main weaknesses in this process?  
+- Which activities are most complex or risky?  
+- What should be automated first?  
+- Should this activity be handled by RPA, AI, or human intervention?  
 
 ---
 
 ## Architecture
 
-The system is structured into the following layers:
+The system is structured into layered intelligence:
 
-**Ingestion Layer**  
-OCEL parsing, validation, and object structure analysis  
+### Ingestion Layer
+Parses and validates object-centric process data.
 
-**Process Analytics Layer**  
-Bottleneck signals, variants, exceptions, and interaction patterns  
+### Process Analytics Layer
+Extracts structural signals such as:
 
-**Decision Intelligence Layer**  
-Activity-level evaluation based on:
+- activity-object relationships  
+- interaction patterns  
+- complexity indicators  
 
-* variability  
-* rule-based nature  
-* data quality  
-* exception rate  
-* human judgment requirement  
+### Decision Intelligence Layer
+Evaluates activities based on:
 
-**Recommendation Layer**  
-Automation classification, prioritization, and confidence scoring  
+- variability  
+- rule-based behavior  
+- object dependencies  
+- process complexity  
 
-**Explainability Layer**  
-Reasoning, assumptions, and data limitations  
+### Recommendation Layer
+Classifies automation opportunities:
 
-### Current Implementation Scope
+- Agentic AI  
+- RPA  
+- Human-in-the-loop  
+- Process redesign  
 
-The current prototype focuses on the early layers of this architecture:
+### Interface Layer (Planned)
+Provides:
 
-- Feature extraction (activity-object relationships)  
-- Interaction pattern classification  
-- Initial insight generation  
-
-These form the foundation of the **Process Analytics** and early **Decision Intelligence** layers.
+- dashboard visualization  
+- AI interaction  
+- explainable outputs  
 
 ---
 
-## Tech Stack
+## Why This Project
 
-* Python  
-* PM4Py (object-centric process mining)  
-* Pandas  
-* (Planned) LangChain / LangGraph  
-* (Planned) OpenAI / Claude APIs  
-* (Planned) Streamlit  
+Many organizations can analyze processes, but struggle to translate that analysis into action.
+
+This project explores how to:
+
+- connect process understanding to automation decisions  
+- structure decision logic explicitly  
+- integrate AI as a reasoning layer, not just a tool  
+- enable faster discovery before committing to large-scale platforms  
+
+The aim is to build a **flexible process intelligence layer** that complements existing tools rather than replacing them.
 
 ---
 
@@ -154,8 +174,8 @@ outputs/
 
 src/
   ingestion/
-  features/        # low-level analytics (foundation layer)
-  export/          # output handling
+  features/
+  export/
   main.py
   run_feature_extraction.py
 
@@ -165,76 +185,22 @@ README.md
 
 ---
 
-## How to Run
-
-Important: ensure you are using Python 3.14
-
-```bash
-python --version
-/usr/local/bin/python3 --version
-```
-
-Run the pipeline:
-
-```bash
-/usr/local/bin/python3 src/main.py --data data/p2p_sample
-```
-
-Pipeline:
-
-```
-Load data
-→ Extract features
-→ Classify patterns
-→ Generate insights
-→ Export JSON
-```
-
-Output:
-
-```
-outputs/activity_insights.json
-```
-
----
-
-## Vision
-
-The goal is to move from tool-based process mining to system-level process intelligence.
-
-This includes:
-
-* Separation of decision logic from execution platforms  
-* Integration of process understanding and AI reasoning  
-* Structured and explainable decisions  
-* Applicability in imperfect or low-data environments  
-* Establishing an internal process intelligence layer before committing to execution platforms  
-
----
-
 ## Status
 
 Work in progress.
 
 Current focus:
 
-* OCEL ingestion  
-* Core analytics foundation  
-* Feature extraction layer  
-* Interaction pattern classification  
-* Insight generation  
+- building the analytics foundation  
+- structuring process signals  
+- generating initial insights  
 
----
+Next steps:
 
-## Roadmap
-
-* OCEL ingestion module  
-* Core process metrics  
-* Bottleneck and anomaly detection  
-* Decision scoring framework  
-* AI-supported classification  
-* Explainable recommendation output  
-* Lightweight interface layer  
+- dashboard prototype  
+- real OCEL dataset integration  
+- AI-assisted reasoning layer  
+- automation decision classification  
 
 ---
 
