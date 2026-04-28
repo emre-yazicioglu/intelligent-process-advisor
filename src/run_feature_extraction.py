@@ -4,6 +4,7 @@ from features.activity_interaction_patterns import (
     classify_activity_interaction_patterns,
 )
 from features.activity_insights import generate_activity_insights
+from export.export_insights import export_to_json
 
 
 def main() -> None:
@@ -30,6 +31,13 @@ def main() -> None:
 
     print("\nActivity Insights")
     print(activity_insights.to_dict())
+
+    export_to_json(
+        data=activity_insights.to_dict(),
+        output_path="outputs/activity_insights.json",
+    )
+
+    print("\nExport completed: outputs/activity_insights.json")
 
 
 if __name__ == "__main__":

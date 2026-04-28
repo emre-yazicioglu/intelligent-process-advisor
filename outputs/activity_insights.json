@@ -1,0 +1,60 @@
+{
+  "insights": [
+    {
+      "activity": "Approve Purchase Order",
+      "pattern": "single_object_primary",
+      "risk": "low",
+      "insight": "Activity operates on a single primary object with low structural complexity",
+      "recommendation": "Ensure efficiency and monitor cycle time"
+    },
+    {
+      "activity": "Create Purchase Order",
+      "pattern": "single_object_primary",
+      "risk": "low",
+      "insight": "Activity operates on a single primary object with low structural complexity",
+      "recommendation": "Ensure efficiency and monitor cycle time"
+    },
+    {
+      "activity": "Match Invoice",
+      "pattern": "multi_object_join",
+      "risk": "high",
+      "insight": "Activity connects multiple business objects and may introduce reconciliation issues",
+      "recommendation": "Validate object consistency and consider automation for matching logic"
+    },
+    {
+      "activity": "Pay Invoice",
+      "pattern": "single_object_primary",
+      "risk": "low",
+      "insight": "Activity operates on a single primary object with low structural complexity",
+      "recommendation": "Ensure efficiency and monitor cycle time"
+    },
+    {
+      "activity": "Receive Goods",
+      "pattern": "item_level_activity",
+      "risk": "medium",
+      "insight": "Activity operates at item level, increasing process complexity and volume",
+      "recommendation": "Aggregate where possible and monitor processing performance"
+    },
+    {
+      "activity": "Receive Invoice",
+      "pattern": "single_object_primary",
+      "risk": "low",
+      "insight": "Activity operates on a single primary object with low structural complexity",
+      "recommendation": "Ensure efficiency and monitor cycle time"
+    },
+    {
+      "activity": "Record Goods Receipt",
+      "pattern": "multi_object_join",
+      "risk": "high",
+      "insight": "Activity connects multiple business objects and may introduce reconciliation issues",
+      "recommendation": "Validate object consistency and consider automation for matching logic"
+    },
+    {
+      "activity": "Send Purchase Order",
+      "pattern": "single_object_primary",
+      "risk": "low",
+      "insight": "Activity operates on a single primary object with low structural complexity",
+      "recommendation": "Ensure efficiency and monitor cycle time"
+    }
+  ]
+}
