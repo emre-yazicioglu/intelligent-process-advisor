@@ -35,6 +35,13 @@ DATA_PATH = "data/p2p_sample"
 ACTIVITY = "ocel:activity"
 OBJECT_TYPE = "ocel:type"
 
+DECISION_CLUSTER_LABELS = {
+    "rpa_or_workflow_automation": "RPA / Workflow Automation",
+    "ai_assisted_automation": "AI-Assisted Automation",
+    "human_in_the_loop": "Human-in-the-Loop",
+    "low_automation_potential": "Low Automation Potential",
+}
+
 
 def build_insights_dataframe(insights: list[dict]) -> pd.DataFrame:
     return pd.DataFrame(insights)
@@ -72,8 +79,24 @@ def build_cluster_dataframe(clusters: dict[str, list[dict]]) -> pd.DataFrame:
         for opportunity in opportunities:
             rows.append({
                 "decision_cluster": cluster_name,
+                "decision_cluster_label": DECISION_CLUSTER_LABELS.get(
+                    cluster_name,
+                    cluster_name,
+                ),
                 **opportunity,
             })
+
+    return pd.DataFrame(rows)
+
+
+def build_cluster_summary(clusters: dict[str, list[dict]]) -> pd.DataFrame:
+    rows: list[dict] = []
+
+    for cluster_name, label in DECISION_CLUSTER_LABELS.items():
+        rows.append({
+            "decision_cluster": label,
+            "count": len(clusters.get(cluster_name, [])),
+        })
 
     return pd.DataFrame(rows)
 
@@ -140,6 +163,7 @@ def main() -> None:
     insights_df = build_insights_dataframe(activity_insights.insights)
     automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
     cluster_df = build_cluster_dataframe(automation_decision_clusters.clusters)
+    cluster_summary_df = build_cluster_summary(automation_decision_clusters.clusters)
 
     pattern_summary_df = build_pattern_summary(insights_df)
     object_type_counts_df = build_object_type_counts(objects)
@@ -164,11 +188,6 @@ def main() -> None:
     automation_candidates = automation_df[
         automation_df["automation_candidate"] == True
     ]
-
-    cluster_summary_df = build_count_table(
-        series=cluster_df["decision_cluster"],
-        label_column="decision_cluster",
-    )
 
     overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, technical_tab = st.tabs(
         [
@@ -328,7 +347,12 @@ def main() -> None:
             st.subheader("Automation Decision Clusters")
 
             for cluster_name, opportunities in automation_decision_clusters.clusters.items():
-                st.markdown(f"### {cluster_name}")
+                cluster_label = DECISION_CLUSTER_LABELS.get(
+                    cluster_name,
+                    cluster_name,
+                )
+
+                st.markdown(f"### {cluster_label}")
 
                 if not opportunities:
                     st.write("No activities in this cluster.")

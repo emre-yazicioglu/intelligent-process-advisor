@@ -39,7 +39,7 @@ def classify_decision_cluster(opportunity: dict[str, Any]) -> str:
     pattern = opportunity["pattern"]
 
     if automation_score < 40:
-        return "keep_human"
+        return "low_automation_potential"
 
     if automation_type in {"rpa_or_workflow", "workflow_or_rpa"}:
         return "rpa_or_workflow_automation"
@@ -77,10 +77,11 @@ def explain_cluster(cluster: str) -> str:
             "Activities in this cluster should keep human oversight because they may "
             "depend on judgment, validation, exceptions, or unclear process conditions."
         ),
-        "keep_human": (
-            "Activities in this cluster are not strong automation priorities based on "
-            "the current data. They may still matter operationally, but the current log "
-            "does not justify prioritizing automation."
+        "low_automation_potential": (
+            "Activities in this cluster currently show limited automation potential "
+            "based on frequency, process position, standardization, or structural complexity. "
+            "They should not be prioritized for automation unless business effort, cost, "
+            "or exception impact is high."
         ),
     }
 
@@ -100,14 +101,14 @@ def extract_automation_decision_clusters(
     - rpa_or_workflow_automation
     - ai_assisted_automation
     - human_in_the_loop
-    - keep_human
+    - low_automation_potential
     """
 
     clusters: dict[str, list[dict[str, Any]]] = {
         "rpa_or_workflow_automation": [],
         "ai_assisted_automation": [],
         "human_in_the_loop": [],
-        "keep_human": [],
+        "low_automation_potential": [],
     }
 
     for opportunity in automation_features.opportunities:
