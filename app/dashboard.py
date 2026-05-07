@@ -28,6 +28,7 @@ from features.automation_decision_clusters import (
     extract_automation_decision_clusters,
 )
 from features.process_flow_features import extract_process_flow_features
+from features.process_performance_features import extract_process_performance_features
 
 
 DATA_PATH = "data/p2p_sample"
@@ -160,10 +161,17 @@ def main() -> None:
         case_object_type="purchase_order",
     )
 
+    process_performance_features = extract_process_performance_features(
+        events=events,
+        relations=relations,
+        case_object_type="purchase_order",
+    )
+
     insights_df = build_insights_dataframe(activity_insights.insights)
     automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
     cluster_df = build_cluster_dataframe(automation_decision_clusters.clusters)
     cluster_summary_df = build_cluster_summary(automation_decision_clusters.clusters)
+    performance_df = pd.DataFrame(process_performance_features.activity_performance)
 
     pattern_summary_df = build_pattern_summary(insights_df)
     object_type_counts_df = build_object_type_counts(objects)
@@ -189,13 +197,14 @@ def main() -> None:
         automation_df["automation_candidate"] == True
     ]
 
-    overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, technical_tab = st.tabs(
+    overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, performance_tab, technical_tab = st.tabs(
         [
             "Overview",
             "Process Flow",
             "Variants",
             "Insights",
             "Automation Opportunities",
+            "Performance",
             "Technical Data",
         ]
     )
@@ -393,6 +402,55 @@ def main() -> None:
 
                 st.divider()
 
+    # ---------------- PERFORMANCE ----------------
+    with performance_tab:
+        st.header("Process Performance Intelligence")
+
+        st.caption(
+            "Operational pain signals used for continuous improvement and future AI reasoning."
+        )
+
+        if performance_df.empty:
+            st.warning("No process performance features were generated.")
+        else:
+            st.subheader("Activity Performance Signals")
+
+            st.dataframe(
+                performance_df,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            st.subheader("High Bottleneck Risk Activities")
+
+            high_bottleneck_df = performance_df[
+                performance_df["bottleneck_risk"] == "high"
+            ]
+
+            if high_bottleneck_df.empty:
+                st.info("No high bottleneck risk activities found in the current dataset.")
+            else:
+                st.dataframe(
+                    high_bottleneck_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            st.subheader("Low Stability Activities")
+
+            low_stability_df = performance_df[
+                performance_df["stability_score"] < 70
+            ]
+
+            if low_stability_df.empty:
+                st.info("No low stability activities found in the current dataset.")
+            else:
+                st.dataframe(
+                    low_stability_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
     # ---------------- TECHNICAL ----------------
     with technical_tab:
         st.header("Technical Data")
@@ -438,6 +496,13 @@ def main() -> None:
         st.subheader("Automation Decision Cluster Features")
         st.dataframe(
             cluster_df,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.subheader("Process Performance Features")
+        st.dataframe(
+            performance_df,
             use_container_width=True,
             hide_index=True,
         )
