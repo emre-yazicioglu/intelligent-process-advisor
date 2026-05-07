@@ -24,6 +24,9 @@ from features.activity_insights import generate_activity_insights
 from features.automation_opportunity_features import (
     extract_automation_opportunity_features,
 )
+from features.automation_decision_clusters import (
+    extract_automation_decision_clusters,
+)
 from features.process_flow_features import extract_process_flow_features
 
 
@@ -60,6 +63,19 @@ def build_object_type_counts(objects: pd.DataFrame) -> pd.DataFrame:
         series=objects[OBJECT_TYPE],
         label_column="object_type",
     )
+
+
+def build_cluster_dataframe(clusters: dict[str, list[dict]]) -> pd.DataFrame:
+    rows: list[dict] = []
+
+    for cluster_name, opportunities in clusters.items():
+        for opportunity in opportunities:
+            rows.append({
+                "decision_cluster": cluster_name,
+                **opportunity,
+            })
+
+    return pd.DataFrame(rows)
 
 
 def show_metric_row(metrics: list[tuple[str, int]]) -> None:
@@ -111,6 +127,10 @@ def main() -> None:
         context_features=activity_context_features,
     )
 
+    automation_decision_clusters = extract_automation_decision_clusters(
+        automation_features=automation_opportunity_features,
+    )
+
     process_flow_features = extract_process_flow_features(
         events=events,
         relations=relations,
@@ -119,6 +139,7 @@ def main() -> None:
 
     insights_df = build_insights_dataframe(activity_insights.insights)
     automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
+    cluster_df = build_cluster_dataframe(automation_decision_clusters.clusters)
 
     pattern_summary_df = build_pattern_summary(insights_df)
     object_type_counts_df = build_object_type_counts(objects)
@@ -143,6 +164,11 @@ def main() -> None:
     automation_candidates = automation_df[
         automation_df["automation_candidate"] == True
     ]
+
+    cluster_summary_df = build_count_table(
+        series=cluster_df["decision_cluster"],
+        label_column="decision_cluster",
+    )
 
     overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, technical_tab = st.tabs(
         [
@@ -182,7 +208,7 @@ def main() -> None:
                 ("Variants", len(variant_summary_df)),
                 ("Insights", len(insights_df)),
                 ("Automation Candidates", len(automation_candidates)),
-                ("Start Activities", len(start_activities_df)),
+                ("Decision Clusters", len(cluster_summary_df)),
             ]
         )
 
@@ -199,9 +225,9 @@ def main() -> None:
             )
 
         with right_col:
-            st.subheader("Interaction Pattern Summary")
+            st.subheader("Automation Decision Cluster Summary")
             st.dataframe(
-                pattern_summary_df,
+                cluster_summary_df,
                 use_container_width=True,
                 hide_index=True,
             )
@@ -274,7 +300,7 @@ def main() -> None:
         st.header("Automation Opportunities")
 
         st.caption(
-            "Rule-based automation opportunity scoring before AI reasoning."
+            "Rule-based automation opportunity scoring and decision clustering before AI reasoning."
         )
 
         if automation_df.empty:
@@ -298,6 +324,34 @@ def main() -> None:
                 use_container_width=True,
                 hide_index=True,
             )
+
+            st.subheader("Automation Decision Clusters")
+
+            for cluster_name, opportunities in automation_decision_clusters.clusters.items():
+                st.markdown(f"### {cluster_name}")
+
+                if not opportunities:
+                    st.write("No activities in this cluster.")
+                    continue
+
+                cluster_opportunities_df = pd.DataFrame(opportunities)
+
+                cluster_display_columns = [
+                    "activity",
+                    "automation_score",
+                    "recommended_automation_type",
+                    "automation_candidate",
+                    "pattern",
+                ]
+
+                st.dataframe(
+                    cluster_opportunities_df[cluster_display_columns],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+                explanation = opportunities[0].get("cluster_explanation", "-")
+                st.info(explanation)
 
             st.subheader("Top Automation Recommendations")
 
@@ -353,6 +407,13 @@ def main() -> None:
         st.subheader("Automation Opportunity Features")
         st.dataframe(
             automation_df,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.subheader("Automation Decision Cluster Features")
+        st.dataframe(
+            cluster_df,
             use_container_width=True,
             hide_index=True,
         )
