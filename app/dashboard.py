@@ -21,6 +21,9 @@ from features.activity_interaction_patterns import (
 )
 from features.activity_context_features import extract_activity_context_features
 from features.activity_insights import generate_activity_insights
+from features.automation_opportunity_features import (
+    extract_automation_opportunity_features,
+)
 from features.process_flow_features import extract_process_flow_features
 
 
@@ -103,6 +106,11 @@ def main() -> None:
         context_features=activity_context_features,
     )
 
+    automation_opportunity_features = extract_automation_opportunity_features(
+        patterns=interaction_patterns,
+        context_features=activity_context_features,
+    )
+
     process_flow_features = extract_process_flow_features(
         events=events,
         relations=relations,
@@ -110,6 +118,8 @@ def main() -> None:
     )
 
     insights_df = build_insights_dataframe(activity_insights.insights)
+    automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
+
     pattern_summary_df = build_pattern_summary(insights_df)
     object_type_counts_df = build_object_type_counts(objects)
 
@@ -130,12 +140,17 @@ def main() -> None:
     invoices = objects[objects[OBJECT_TYPE] == "invoice"]
     items = objects[objects[OBJECT_TYPE] == "item"]
 
-    overview_tab, flow_tab, variants_tab, insights_tab, technical_tab = st.tabs(
+    automation_candidates = automation_df[
+        automation_df["automation_candidate"] == True
+    ]
+
+    overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, technical_tab = st.tabs(
         [
             "Overview",
             "Process Flow",
             "Variants",
             "Insights",
+            "Automation Opportunities",
             "Technical Data",
         ]
     )
@@ -166,8 +181,8 @@ def main() -> None:
             [
                 ("Variants", len(variant_summary_df)),
                 ("Insights", len(insights_df)),
+                ("Automation Candidates", len(automation_candidates)),
                 ("Start Activities", len(start_activities_df)),
-                ("End Activities", len(end_activities_df)),
             ]
         )
 
@@ -254,6 +269,52 @@ def main() -> None:
             st.write(row.get("recommendation", "-"))
             st.divider()
 
+    # ---------------- AUTOMATION ----------------
+    with automation_tab:
+        st.header("Automation Opportunities")
+
+        st.caption(
+            "Rule-based automation opportunity scoring before AI reasoning."
+        )
+
+        if automation_df.empty:
+            st.warning("No automation opportunities were generated.")
+        else:
+            display_columns = [
+                "activity",
+                "pattern",
+                "automation_score",
+                "automation_candidate",
+                "recommended_automation_type",
+                "frequency",
+                "percentage_of_total_events",
+                "average_position",
+                "variants_containing_activity",
+            ]
+
+            st.subheader("Automation Opportunity Ranking")
+            st.dataframe(
+                automation_df[display_columns],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            st.subheader("Top Automation Recommendations")
+
+            top_opportunities = automation_df.head(3)
+
+            for _, row in top_opportunities.iterrows():
+                st.subheader(row["activity"])
+                st.write(f"Recommended type: {row['recommended_automation_type']}")
+                st.write(f"Automation score: {row['automation_score']}")
+                st.write(f"Candidate: {row['automation_candidate']}")
+
+                st.write("Reasoning:")
+                for reason in row["reasoning"]:
+                    st.write(f"- {reason}")
+
+                st.divider()
+
     # ---------------- TECHNICAL ----------------
     with technical_tab:
         st.header("Technical Data")
@@ -285,6 +346,13 @@ def main() -> None:
         st.subheader("Activity Context Features")
         st.dataframe(
             activity_context_df,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.subheader("Automation Opportunity Features")
+        st.dataframe(
+            automation_df,
             use_container_width=True,
             hide_index=True,
         )
