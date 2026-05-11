@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass
 from typing import Any
 
+from dotenv import load_dotenv
 from openai import OpenAI
 
 
-DEFAULT_MODEL = "gpt-5.5"
+load_dotenv()
+
+DEFAULT_MODEL = "gpt-4.1"
 
 
 @dataclass(frozen=True)
@@ -47,9 +49,8 @@ def build_process_advisor_payload(
     """
     Build a compact structured payload for AI reasoning.
 
-    Important:
-    We do not send raw dataframes to the AI.
-    We send structured process intelligence already calculated by our engine.
+    We do not send raw CSVs or full dataframes to the AI.
+    We send structured intelligence already calculated by our engine.
     """
 
     return {
@@ -65,7 +66,7 @@ def build_process_advisor_prompt(payload: dict[str, Any]) -> str:
     """
     Build the AI prompt.
 
-    The AI should act as a Process Intelligence advisor, not as a generic chatbot.
+    The AI should behave like a Process Intelligence advisor, not a generic chatbot.
     """
 
     payload_json = json.dumps(
@@ -94,7 +95,7 @@ Focus on:
 
 Rules:
 - Do not invent facts that are not supported by the provided data.
-- If the data is too small or weak, explicitly say so.
+- If the dataset is small or weak, explicitly say so.
 - Avoid generic consulting language.
 - Be specific and refer to activity names when possible.
 - Keep the tone professional and suitable for an executive process improvement audience.
@@ -118,8 +119,6 @@ Structured process intelligence payload:
 def parse_process_advisor_response(response_text: str) -> ProcessAdvisorResponse:
     """
     Convert AI JSON text into a typed response object.
-
-    This keeps the rest of the app safer and easier to display.
     """
 
     try:
@@ -127,7 +126,7 @@ def parse_process_advisor_response(response_text: str) -> ProcessAdvisorResponse
     except json.JSONDecodeError as error:
         raise ValueError(
             "The AI response was not valid JSON. "
-            "Try running the advisor again or simplify the prompt."
+            "Try running the advisor again."
         ) from error
 
     return ProcessAdvisorResponse(
@@ -155,17 +154,9 @@ def generate_process_advisor_summary(
     """
     Generate an AI-based process advisor summary.
 
-    This function is the first AI reasoning layer of the project.
+    This is the first AI reasoning layer of the project.
     It depends on structured analytics created by the local feature engine.
     """
-
-    api_key = os.environ.get("OPENAI_API_KEY")
-
-    if not api_key:
-        raise ValueError(
-            "OPENAI_API_KEY is not set. "
-            "Set it in your terminal before running the AI Advisor."
-        )
 
     payload = build_process_advisor_payload(
         process_flow_features=process_flow_features,
@@ -177,7 +168,7 @@ def generate_process_advisor_summary(
 
     prompt = build_process_advisor_prompt(payload)
 
-    client = OpenAI(api_key=api_key)
+    client = OpenAI()
 
     response = client.responses.create(
         model=model,
