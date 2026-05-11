@@ -1,4 +1,5 @@
 pm4py
 pandas
 streamlit
+python-dotenv
 openai
