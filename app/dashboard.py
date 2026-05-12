@@ -29,7 +29,10 @@ from features.automation_decision_clusters import (
 )
 from features.process_flow_features import extract_process_flow_features
 from features.process_performance_features import extract_process_performance_features
-from ai.process_advisor import generate_process_advisor_summary
+from ai.process_advisor import (
+    answer_process_question,
+    generate_process_advisor_summary,
+)
 
 
 DATA_PATH = "data/p2p_sample"
@@ -473,70 +476,6 @@ def main() -> None:
                     hide_index=True,
                 )
 
-    # ---------------- AI ADVISOR ----------------
-    with ai_advisor_tab:
-        st.header("AI Process Advisor")
-
-        st.caption(
-            "Generates an executive process improvement and automation advisory summary "
-            "from the structured intelligence produced by the local analytics engine."
-        )
-
-        st.warning(
-            "The AI Advisor uses the OpenAI API only when you click the button below. "
-            "It does not send raw CSV files, only structured analytics outputs."
-        )
-
-        if st.button("Generate AI Advisor Summary"):
-            with st.spinner("Generating AI process advisor summary..."):
-                try:
-                    advisor_response = generate_process_advisor_summary(
-                        process_flow_features=process_flow_features,
-                        activity_insights=activity_insights,
-                        automation_opportunity_features=automation_opportunity_features,
-                        automation_decision_clusters=automation_decision_clusters,
-                        process_performance_features=process_performance_features,
-                    )
-
-                    st.session_state["advisor_response"] = advisor_response.to_dict()
-
-                except Exception as error:
-                    st.error("AI Advisor generation failed.")
-                    st.exception(error)
-
-        advisor_response_data = st.session_state.get("advisor_response")
-
-        if advisor_response_data:
-            st.subheader("Executive Summary")
-            st.write(advisor_response_data.get("executive_summary", ""))
-
-            show_list_section(
-                "Key Weaknesses",
-                advisor_response_data.get("key_weaknesses", []),
-            )
-
-            show_list_section(
-                "Automation Recommendations",
-                advisor_response_data.get("automation_recommendations", []),
-            )
-
-            show_list_section(
-                "Human-in-the-Loop Recommendations",
-                advisor_response_data.get("human_in_the_loop_recommendations", []),
-            )
-
-            show_list_section(
-                "AI-Assisted Recommendations",
-                advisor_response_data.get("ai_assisted_recommendations", []),
-            )
-
-            show_list_section(
-                "Next Steps",
-                advisor_response_data.get("next_steps", []),
-            )
-        else:
-            st.info("Click the button to generate the first AI advisor summary.")
-
     # ---------------- TECHNICAL ----------------
     with technical_tab:
         st.header("Technical Data")
@@ -592,6 +531,121 @@ def main() -> None:
             use_container_width=True,
             hide_index=True,
         )
+
+    # ---------------- AI ADVISOR ----------------
+    with ai_advisor_tab:
+        st.header("AI Process Advisor")
+
+        st.caption(
+            "Generates executive process improvement guidance and answers custom "
+            "questions using the structured intelligence produced by the local analytics engine."
+        )
+
+        st.warning(
+            "The AI Advisor uses the OpenAI API only when you click a button below. "
+            "It does not send raw CSV files, only structured analytics outputs."
+        )
+
+        st.subheader("Executive Advisor Summary")
+
+        if st.button("Generate AI Advisor Summary"):
+            with st.spinner("Generating AI process advisor summary..."):
+                try:
+                    advisor_response = generate_process_advisor_summary(
+                        process_flow_features=process_flow_features,
+                        activity_insights=activity_insights,
+                        automation_opportunity_features=automation_opportunity_features,
+                        automation_decision_clusters=automation_decision_clusters,
+                        process_performance_features=process_performance_features,
+                    )
+
+                    st.session_state["advisor_response"] = advisor_response.to_dict()
+
+                except Exception as error:
+                    st.error("AI Advisor generation failed.")
+                    st.exception(error)
+
+        advisor_response_data = st.session_state.get("advisor_response")
+
+        if advisor_response_data:
+            st.subheader("Executive Summary")
+            st.write(advisor_response_data.get("executive_summary", ""))
+
+            show_list_section(
+                "Key Weaknesses",
+                advisor_response_data.get("key_weaknesses", []),
+            )
+
+            show_list_section(
+                "Automation Recommendations",
+                advisor_response_data.get("automation_recommendations", []),
+            )
+
+            show_list_section(
+                "Human-in-the-Loop Recommendations",
+                advisor_response_data.get("human_in_the_loop_recommendations", []),
+            )
+
+            show_list_section(
+                "AI-Assisted Recommendations",
+                advisor_response_data.get("ai_assisted_recommendations", []),
+            )
+
+            show_list_section(
+                "Next Steps",
+                advisor_response_data.get("next_steps", []),
+            )
+        else:
+            st.info("Click the button to generate the first AI advisor summary.")
+
+        st.divider()
+
+        st.subheader("Ask the Process Advisor")
+
+        st.caption(
+            "Ask a focused question about bottlenecks, rework, automation candidates, "
+            "decision clusters, or process improvement priorities."
+        )
+
+        process_question = st.text_area(
+            label="Your question",
+            placeholder=(
+                "Example: Which activities should be prioritized for automation and why?"
+            ),
+            height=120,
+        )
+
+        if st.button("Ask Question"):
+            if not process_question.strip():
+                st.warning("Please enter a question first.")
+            else:
+                with st.spinner("Answering process question..."):
+                    try:
+                        advisor_answer = answer_process_question(
+                            process_flow_features=process_flow_features,
+                            activity_insights=activity_insights,
+                            automation_opportunity_features=automation_opportunity_features,
+                            automation_decision_clusters=automation_decision_clusters,
+                            process_performance_features=process_performance_features,
+                            question=process_question,
+                        )
+
+                        st.session_state["advisor_question"] = process_question
+                        st.session_state["advisor_answer"] = advisor_answer
+
+                    except Exception as error:
+                        st.error("AI question answering failed.")
+                        st.exception(error)
+
+        advisor_question = st.session_state.get("advisor_question")
+        advisor_answer = st.session_state.get("advisor_answer")
+
+        if advisor_question and advisor_answer:
+            st.subheader("Question")
+            st.write(advisor_question)
+
+            st.subheader("Answer")
+            st.write(advisor_answer)
 
 
 if __name__ == "__main__":
