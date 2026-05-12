@@ -38,26 +38,11 @@ PROCESS_ADVISOR_SCHEMA = {
     "additionalProperties": False,
     "properties": {
         "executive_summary": {"type": "string"},
-        "key_weaknesses": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
-        "automation_recommendations": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
-        "human_in_the_loop_recommendations": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
-        "ai_assisted_recommendations": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
-        "next_steps": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
+        "key_weaknesses": {"type": "array", "items": {"type": "string"}},
+        "automation_recommendations": {"type": "array", "items": {"type": "string"}},
+        "human_in_the_loop_recommendations": {"type": "array", "items": {"type": "string"}},
+        "ai_assisted_recommendations": {"type": "array", "items": {"type": "string"}},
+        "next_steps": {"type": "array", "items": {"type": "string"}},
     },
     "required": [
         "executive_summary",
@@ -87,11 +72,7 @@ def build_process_advisor_payload(
 
 
 def build_process_advisor_prompt(payload: dict[str, Any]) -> str:
-    payload_json = json.dumps(
-        payload,
-        indent=2,
-        default=str,
-    )
+    payload_json = json.dumps(payload, indent=2, default=str)
 
     return f"""
 You are an expert Process Intelligence and Intelligent Automation advisor.
@@ -130,9 +111,7 @@ def parse_process_advisor_response(response_text: str) -> ProcessAdvisorResponse
         executive_summary=str(parsed["executive_summary"]),
         key_weaknesses=list(parsed["key_weaknesses"]),
         automation_recommendations=list(parsed["automation_recommendations"]),
-        human_in_the_loop_recommendations=list(
-            parsed["human_in_the_loop_recommendations"]
-        ),
+        human_in_the_loop_recommendations=list(parsed["human_in_the_loop_recommendations"]),
         ai_assisted_recommendations=list(parsed["ai_assisted_recommendations"]),
         next_steps=list(parsed["next_steps"]),
     )
@@ -172,3 +151,69 @@ def generate_process_advisor_summary(
     )
 
     return parse_process_advisor_response(response.output_text)
+
+
+def build_question_prompt(
+    payload: dict[str, Any],
+    question: str,
+) -> str:
+    payload_json = json.dumps(payload, indent=2, default=str)
+
+    return f"""
+You are an expert Process Intelligence and Intelligent Automation advisor.
+
+Answer the user's question using only the structured process intelligence payload below.
+
+User question:
+{question}
+
+Rules:
+- Do not invent facts that are not supported by the provided data.
+- If the dataset is too small to answer confidently, say so clearly.
+- Refer to specific activities when possible.
+- Explain the reasoning in practical business language.
+- Keep the answer concise but useful.
+- If the question is about automation, distinguish between RPA/workflow automation, AI-assisted automation, and human-in-the-loop.
+
+Structured process intelligence payload:
+{payload_json}
+""".strip()
+
+
+def answer_process_question(
+    process_flow_features: Any,
+    activity_insights: Any,
+    automation_opportunity_features: Any,
+    automation_decision_clusters: Any,
+    process_performance_features: Any,
+    question: str,
+    model: str = DEFAULT_MODEL,
+) -> str:
+    """
+    Answer a custom user question about the analyzed process.
+
+    This is the first interactive AI advisor capability.
+    It uses structured analytics from the local process intelligence engine.
+    """
+
+    payload = build_process_advisor_payload(
+        process_flow_features=process_flow_features,
+        activity_insights=activity_insights,
+        automation_opportunity_features=automation_opportunity_features,
+        automation_decision_clusters=automation_decision_clusters,
+        process_performance_features=process_performance_features,
+    )
+
+    prompt = build_question_prompt(
+        payload=payload,
+        question=question,
+    )
+
+    client = OpenAI()
+
+    response = client.responses.create(
+        model=model,
+        input=prompt,
+    )
+
+    return response.output_text
