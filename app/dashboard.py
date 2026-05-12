@@ -216,8 +216,8 @@ def main() -> None:
         insights_tab,
         automation_tab,
         performance_tab,
-        ai_advisor_tab,
         technical_tab,
+        ai_advisor_tab,
     ) = st.tabs(
         [
             "Overview",
@@ -226,8 +226,8 @@ def main() -> None:
             "Insights",
             "Automation Opportunities",
             "Performance",
-            "AI Advisor",
             "Technical Data",
+            "AI Advisor",
         ]
     )
 
