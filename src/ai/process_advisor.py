@@ -15,12 +15,6 @@ DEFAULT_MODEL = "gpt-4.1"
 
 @dataclass(frozen=True)
 class ProcessAdvisorResponse:
-    """
-    AI-generated process advisor response.
-
-    This object keeps the AI output structured so the dashboard can display it cleanly.
-    """
-
     executive_summary: str
     key_weaknesses: list[str]
     automation_recommendations: list[str]
@@ -39,6 +33,43 @@ class ProcessAdvisorResponse:
         }
 
 
+PROCESS_ADVISOR_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "executive_summary": {"type": "string"},
+        "key_weaknesses": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "automation_recommendations": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "human_in_the_loop_recommendations": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "ai_assisted_recommendations": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "next_steps": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+    },
+    "required": [
+        "executive_summary",
+        "key_weaknesses",
+        "automation_recommendations",
+        "human_in_the_loop_recommendations",
+        "ai_assisted_recommendations",
+        "next_steps",
+    ],
+}
+
+
 def build_process_advisor_payload(
     process_flow_features: Any,
     activity_insights: Any,
@@ -46,13 +77,6 @@ def build_process_advisor_payload(
     automation_decision_clusters: Any,
     process_performance_features: Any,
 ) -> dict[str, Any]:
-    """
-    Build a compact structured payload for AI reasoning.
-
-    We do not send raw CSVs or full dataframes to the AI.
-    We send structured intelligence already calculated by our engine.
-    """
-
     return {
         "process_flow": process_flow_features.to_dict(),
         "activity_insights": activity_insights.to_dict(),
@@ -63,12 +87,6 @@ def build_process_advisor_payload(
 
 
 def build_process_advisor_prompt(payload: dict[str, Any]) -> str:
-    """
-    Build the AI prompt.
-
-    The AI should behave like a Process Intelligence advisor, not a generic chatbot.
-    """
-
     payload_json = json.dumps(
         payload,
         indent=2,
@@ -80,7 +98,6 @@ You are an expert Process Intelligence and Intelligent Automation advisor.
 
 You are analyzing structured outputs from an Object-Centric Event Log analytics engine.
 
-Your task:
 Produce a practical executive advisory summary.
 
 Focus on:
@@ -88,28 +105,18 @@ Focus on:
 2. Bottleneck or stability risks
 3. Rework or variance signals
 4. Automation opportunities
-5. Which activities fit RPA / workflow automation
-6. Which activities fit AI-assisted automation
-7. Which activities should remain human-in-the-loop
+5. RPA / workflow automation candidates
+6. AI-assisted automation candidates
+7. Human-in-the-loop areas
 8. Concrete next steps for continuous improvement
 
 Rules:
 - Do not invent facts that are not supported by the provided data.
 - If the dataset is small or weak, explicitly say so.
 - Avoid generic consulting language.
-- Be specific and refer to activity names when possible.
-- Keep the tone professional and suitable for an executive process improvement audience.
-- Return only valid JSON.
-
-Required JSON structure:
-{{
-  "executive_summary": "...",
-  "key_weaknesses": ["..."],
-  "automation_recommendations": ["..."],
-  "human_in_the_loop_recommendations": ["..."],
-  "ai_assisted_recommendations": ["..."],
-  "next_steps": ["..."]
-}}
+- Refer to activity names when possible.
+- Do not overclaim business impact.
+- Keep the tone suitable for an executive process improvement audience.
 
 Structured process intelligence payload:
 {payload_json}
@@ -117,29 +124,17 @@ Structured process intelligence payload:
 
 
 def parse_process_advisor_response(response_text: str) -> ProcessAdvisorResponse:
-    """
-    Convert AI JSON text into a typed response object.
-    """
-
-    try:
-        parsed = json.loads(response_text)
-    except json.JSONDecodeError as error:
-        raise ValueError(
-            "The AI response was not valid JSON. "
-            "Try running the advisor again."
-        ) from error
+    parsed = json.loads(response_text)
 
     return ProcessAdvisorResponse(
-        executive_summary=str(parsed.get("executive_summary", "")),
-        key_weaknesses=list(parsed.get("key_weaknesses", [])),
-        automation_recommendations=list(parsed.get("automation_recommendations", [])),
+        executive_summary=str(parsed["executive_summary"]),
+        key_weaknesses=list(parsed["key_weaknesses"]),
+        automation_recommendations=list(parsed["automation_recommendations"]),
         human_in_the_loop_recommendations=list(
-            parsed.get("human_in_the_loop_recommendations", [])
+            parsed["human_in_the_loop_recommendations"]
         ),
-        ai_assisted_recommendations=list(
-            parsed.get("ai_assisted_recommendations", [])
-        ),
-        next_steps=list(parsed.get("next_steps", [])),
+        ai_assisted_recommendations=list(parsed["ai_assisted_recommendations"]),
+        next_steps=list(parsed["next_steps"]),
     )
 
 
@@ -151,13 +146,6 @@ def generate_process_advisor_summary(
     process_performance_features: Any,
     model: str = DEFAULT_MODEL,
 ) -> ProcessAdvisorResponse:
-    """
-    Generate an AI-based process advisor summary.
-
-    This is the first AI reasoning layer of the project.
-    It depends on structured analytics created by the local feature engine.
-    """
-
     payload = build_process_advisor_payload(
         process_flow_features=process_flow_features,
         activity_insights=activity_insights,
@@ -173,6 +161,14 @@ def generate_process_advisor_summary(
     response = client.responses.create(
         model=model,
         input=prompt,
+        text={
+            "format": {
+                "type": "json_schema",
+                "name": "process_advisor_response",
+                "schema": PROCESS_ADVISOR_SCHEMA,
+                "strict": True,
+            }
+        },
     )
 
     return parse_process_advisor_response(response.output_text)
