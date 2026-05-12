@@ -29,6 +29,7 @@ from features.automation_decision_clusters import (
 )
 from features.process_flow_features import extract_process_flow_features
 from features.process_performance_features import extract_process_performance_features
+from ai.process_advisor import generate_process_advisor_summary
 
 
 DATA_PATH = "data/p2p_sample"
@@ -107,6 +108,17 @@ def show_metric_row(metrics: list[tuple[str, int]]) -> None:
 
     for column, (label, value) in zip(columns, metrics):
         column.metric(label, value)
+
+
+def show_list_section(title: str, items: list[str]) -> None:
+    st.subheader(title)
+
+    if not items:
+        st.write("No items returned.")
+        return
+
+    for item in items:
+        st.write(f"- {item}")
 
 
 def main() -> None:
@@ -197,7 +209,16 @@ def main() -> None:
         automation_df["automation_candidate"] == True
     ]
 
-    overview_tab, flow_tab, variants_tab, insights_tab, automation_tab, performance_tab, technical_tab = st.tabs(
+    (
+        overview_tab,
+        flow_tab,
+        variants_tab,
+        insights_tab,
+        automation_tab,
+        performance_tab,
+        ai_advisor_tab,
+        technical_tab,
+    ) = st.tabs(
         [
             "Overview",
             "Process Flow",
@@ -205,6 +226,7 @@ def main() -> None:
             "Insights",
             "Automation Opportunities",
             "Performance",
+            "AI Advisor",
             "Technical Data",
         ]
     )
@@ -450,6 +472,70 @@ def main() -> None:
                     use_container_width=True,
                     hide_index=True,
                 )
+
+    # ---------------- AI ADVISOR ----------------
+    with ai_advisor_tab:
+        st.header("AI Process Advisor")
+
+        st.caption(
+            "Generates an executive process improvement and automation advisory summary "
+            "from the structured intelligence produced by the local analytics engine."
+        )
+
+        st.warning(
+            "The AI Advisor uses the OpenAI API only when you click the button below. "
+            "It does not send raw CSV files, only structured analytics outputs."
+        )
+
+        if st.button("Generate AI Advisor Summary"):
+            with st.spinner("Generating AI process advisor summary..."):
+                try:
+                    advisor_response = generate_process_advisor_summary(
+                        process_flow_features=process_flow_features,
+                        activity_insights=activity_insights,
+                        automation_opportunity_features=automation_opportunity_features,
+                        automation_decision_clusters=automation_decision_clusters,
+                        process_performance_features=process_performance_features,
+                    )
+
+                    st.session_state["advisor_response"] = advisor_response.to_dict()
+
+                except Exception as error:
+                    st.error("AI Advisor generation failed.")
+                    st.exception(error)
+
+        advisor_response_data = st.session_state.get("advisor_response")
+
+        if advisor_response_data:
+            st.subheader("Executive Summary")
+            st.write(advisor_response_data.get("executive_summary", ""))
+
+            show_list_section(
+                "Key Weaknesses",
+                advisor_response_data.get("key_weaknesses", []),
+            )
+
+            show_list_section(
+                "Automation Recommendations",
+                advisor_response_data.get("automation_recommendations", []),
+            )
+
+            show_list_section(
+                "Human-in-the-Loop Recommendations",
+                advisor_response_data.get("human_in_the_loop_recommendations", []),
+            )
+
+            show_list_section(
+                "AI-Assisted Recommendations",
+                advisor_response_data.get("ai_assisted_recommendations", []),
+            )
+
+            show_list_section(
+                "Next Steps",
+                advisor_response_data.get("next_steps", []),
+            )
+        else:
+            st.info("Click the button to generate the first AI advisor summary.")
 
     # ---------------- TECHNICAL ----------------
     with technical_tab:
