@@ -13,37 +13,38 @@ An AI-augmented Process Intelligence system that analyzes Object-Centric Event L
 
 ## Overview
 
-Traditional process mining helps organizations understand processes.
+Organizations increasingly invest in:
 
-However, a major gap still exists between:
+- process mining
+- intelligent automation
+- AI copilots
+- operational intelligence
+
+However, many teams still face significant decision latency between:
 
 ```text
-process visibility
+process discovery
 → and
-automation decision-making
+operational action
 ```
 
-Most platforms can visualize processes.
+Process visibility alone is often not enough to support structured operational decisions around:
 
-Very few systems can explain:
+- automation prioritization
+- AI applicability
+- bottleneck mitigation
+- exception handling
+- human-in-the-loop requirements
+- process redesign opportunities
 
-- what should be automated
-- why it should be automated
-- where operational weaknesses exist
-- which activities require AI, RPA, or human-in-the-loop approaches
-- where process redesign is more valuable than automation
+This project introduces a custom AI-augmented Process Intelligence approach focused on:
 
-Intelligent Process Advisor was designed to address this gap.
+- structured analytical signals
+- automation-oriented reasoning
+- AI-assisted interpretation
+- explainable operational recommendations
 
-The project extends process mining with an additional intelligence layer focused on:
-
-- process analytics
-- operational signals
-- automation discovery
-- AI-assisted reasoning
-- explainable recommendations
-
-The goal is not only to analyze processes, but to support structured operational decisions.
+The objective is to transform process intelligence into a more actionable and decision-oriented operational layer.
 
 ---
 
