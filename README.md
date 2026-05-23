@@ -1,228 +1,130 @@
 # Intelligent Process Advisor
 
-## AI-Augmented Process Intelligence for Automation Discovery
+AI-Augmented Process Intelligence for Automation Discovery
 
-An AI-augmented Process Intelligence system that analyzes Object-Centric Event Logs (OCEL), provides advanced process analytics and interactive insights, and enables intelligent automation decision support across:
-
-- RPA
-- AI-assisted automation
-- Human-in-the-loop workflows
-- Process redesign initiatives
+An AI-augmented Process Intelligence system that analyzes Object-Centric Event Logs (OCEL), generates process analytics and explainable operational insights, provides conversational AI assistant and supports intelligent automation decisions across RPA, AI-assisted automation, human-in-the-loop workflows, and process redesign initiatives.
 
 ---
 
 ## Overview
 
-Organizations increasingly invest in:
+Intelligent Process Advisor is an experimental Process Intelligence system designed to bridge process analytics and operational decision-making.
 
-- process mining
-- intelligent automation
-- AI copilots
-- operational intelligence
+The system combines:
 
-However, many teams still face significant decision latency between:
-
-```text
-process discovery
-→ and
-operational action
-```
-
-Process visibility alone is often not enough to support structured operational decisions around:
-
-- automation prioritization
-- AI applicability
-- bottleneck mitigation
-- exception handling
-- human-in-the-loop requirements
-- process redesign opportunities
-
-This project introduces a custom AI-augmented Process Intelligence approach focused on:
-
-- structured analytical signals
+- object-centric process analytics
+- process flow intelligence
+- explainable operational insights
 - automation-oriented reasoning
-- AI-assisted interpretation
-- explainable operational recommendations
+- natural language process exploration
 
-The objective is to transform process intelligence into a more actionable and decision-oriented operational layer.
+The goal is not only to understand processes, but to support structured operational and automation decisions directly from process data.
 
 ---
 
-## Current Capabilities
+## Current Prototype
 
-The current prototype already supports:
+The current prototype can:
 
-- OCEL-style event log ingestion
-- Object-centric process analytics
-- Activity-object relationship analysis
-- Process flow analytics
-- Variant analysis
-- Rework indicators
-- Bottleneck indicators
-- Waiting time analysis
-- Stability and variance signals
-- Automation opportunity scoring
-- Automation decision clustering
-- RPA / AI / Human-in-the-loop recommendations
-- AI-generated executive process summaries
-- Interactive AI process advisor Q&A
+- ingest OCEL-style process data from CSV
+- analyze activity-object relationships
+- identify process variants
+- detect interaction and dependency patterns
+- generate process flow analytics
+- generate explainable process insights
+- visualize analytical outputs through a Streamlit dashboard
+
+Current analytics include:
+
+- activity frequency
+- process variants
+- directly-follows relationships
+- start and end activities
+- object dependencies
+- multi-object interaction patterns
+- item-level processing signals
 
 ---
 
 ## Example Workflow
 
 ```text
-OCEL Event Data
-→ Process Analytics Engine
-→ Context & Performance Features
-→ Automation Opportunity Scoring
-→ Decision Clustering
-→ AI Process Advisor
-→ Interactive Process Q&A
+OCEL / CSV process data
+→ process analytics
+→ process insights
+→ dashboard visualization
+→ natural language process exploration
+→ automation decision support
 ```
 
 ---
 
-## Example AI Questions
+## Example Natural Language Questions
 
-The AI Advisor supports interactive process questioning directly on top of structured process intelligence.
+The system is designed to support questions such as:
 
-Example questions:
-
-- Which activities should be prioritized for automation and why?
-- Which process areas show the highest operational instability?
-- Where are the biggest bottleneck signals?
-- Which activities require human-in-the-loop handling?
-- Which activities are strong candidates for AI-assisted automation?
-- Which variants generate the highest rework?
-- What should be improved first in the process?
+- Which activities appear to be the strongest automation candidates?
+- Which process areas show the highest operational complexity?
+- Where do object dependencies create reconciliation risks?
+- Which variants create the most inefficiency?
+- Which activities are highly repetitive and rule-based?
+- Which activities may require human judgment instead of automation?
 
 ---
 
-## Process Intelligence Philosophy
-
-This project is based on one core idea:
-
-```text
-Process Mining alone is not enough.
-```
-
-Visibility without structured operational reasoning still leaves organizations with major uncertainty around:
-
-- automation prioritization
-- operational redesign
-- AI applicability
-- exception handling
-- process standardization
-
-Intelligent Process Advisor attempts to bridge this gap through:
-
-- explainable analytics
-- structured automation scoring
-- operational reasoning
-- AI-assisted interpretation
-
-The objective is to reduce decision latency between:
-
-```text
-process discovery
-→ and
-continuous improvement action
-```
-
----
-
-## Current Architecture
+## Architecture
 
 ### Ingestion Layer
 
-Parses and validates object-centric process data.
+Loads and validates Object-Centric Event Logs (OCEL).
 
 ### Process Analytics Layer
 
-Extracts process intelligence signals such as:
+Generates structural and operational process signals from object-centric process data.
 
-- process flow
-- variants
-- activity context
-- object interactions
-- performance indicators
-- process instability
-- rework behavior
+### Insight Layer
 
-### Automation Intelligence Layer
+Transforms analytical signals into explainable operational insights.
 
-Calculates:
+### AI Intelligence Layer
 
-- automation suitability
-- operational complexity
-- AI-assisted opportunities
-- RPA candidates
-- human-in-the-loop activities
+Provides AI-assisted process interpretation, automated analytical summaries, deep process exploration, and conversational interaction through natural language process reasoning.
 
-### AI Reasoning Layer
+### Decision Support Layer
 
-Uses structured analytics outputs to generate:
+Supports automation-oriented reasoning across:
 
-- executive summaries
-- operational recommendations
-- automation guidance
-- interactive process Q&A
+- RPA
+- AI-assisted automation
+- human-in-the-loop workflows
+- process redesign
 
 ### Interface Layer
 
-Provides:
-
-- dashboard visualization
-- interactive exploration
-- explainable AI outputs
+Provides dashboard-based process exploration and visualization.
 
 ---
 
 ## Current Dataset
 
-The current demo environment includes a synthetic Procure-to-Pay (P2P) object-centric event log with:
+The current prototype uses a synthetic Purchase-to-Pay (P2P) Object-Centric Event Log containing:
 
-- thousands of process cases
-- multi-object interactions
-- process variants
-- rework loops
-- invoice mismatch scenarios
-- waiting time variation
-- automation opportunity patterns
+- purchase orders
+- invoices
+- goods receipts
+- line items
 
-The dataset was intentionally designed to simulate realistic operational complexity while remaining lightweight enough for rapid experimentation.
+The dataset simulates:
 
----
-
-## Example Focus Areas
-
-The system currently detects and reasons about scenarios such as:
-
-- invoice matching complexity
-- goods receipt rework
-- approval bottlenecks
-- process variance
-- object reconciliation pain points
-- high-waiting-time activities
-- repetitive manual handling
-- automation candidate prioritization
+- multi-object dependencies
+- reconciliation activities
+- item-level processing
+- process variation
+- operational complexity
 
 ---
 
-## Technology Stack
-
-Current implementation uses:
-
-- Python
-- Pandas
-- PM4Py
-- Streamlit
-- OpenAI API
-
----
-
-## Project Structure
+## Repository Structure
 
 ```text
 intelligent-process-advisor/
@@ -237,7 +139,6 @@ outputs/
   activity_insights.json
 
 src/
-  ai/
   ingestion/
   features/
   export/
@@ -249,56 +150,35 @@ README.md
 
 ---
 
-## Current Status
+## Technology Stack
 
-Active development.
-
-Current focus areas:
-
-- strengthening process intelligence logic
-- improving automation decision quality
-- expanding process performance analytics
-- improving AI-assisted reasoning quality
-- preparing real OCEL dataset ingestion
-- strengthening multi-domain support
+- Python
+- Pandas
+- PM4Py
+- Streamlit
 
 ---
 
-## Planned Roadmap
+## Future Directions
 
-Planned future capabilities include:
+Potential future extensions include:
 
-- real OCEL dataset upload
-- drag-and-drop CSV ingestion
-- multi-domain process templates
-- root cause analysis
-- explainable AI reasoning traces
-- advanced bottleneck analytics
-- process simulation
-- interactive automation discovery workspace
-- agentic automation orchestration concepts
-- cross-process intelligence layers
+- direct OCEL / CSV upload workflows
+- advanced process visualizations and BPMN-style process flows with decision points
+- interactive filtering and drill-down exploration
+- expanded operational context / master data integration for richer process correlation and analysis
+- deep root cause discovery engine with ML-assisted features
 
 ---
 
-## Why This Project Matters
+## Status
 
-Organizations increasingly invest in:
+Work in progress.
 
-- process mining
-- intelligent automation
-- AI copilots
-- operational intelligence
-
-But many still struggle to connect these capabilities into one coherent operational decision layer.
-
-This project explores how process intelligence can evolve from:
-
-```text
-process visibility
-→ into
-automation decision intelligence
-```
+Current focus:
+- improving insight quality and contextual reasoning
+- expanding interactive analytics capabilities with filters and selections
+- enhancing process exploration and automation intelligence
 
 ---
 
@@ -306,4 +186,4 @@ automation decision intelligence
 
 Emre Yazıcıoğlu
 
-Building process intelligence systems that connect advenced analytics to intelligent automation decisions.
+Building Process Intelligence systems that connect process analytics to operational and automation decisions.
