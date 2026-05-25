@@ -164,7 +164,7 @@ def add_event(
 
 
 def build_p2p_ocel(
-    purchase_order_count: int = 2000,
+    purchase_order_count: int = 50000,
     seed: int = 42,
 ) -> OCEL:
     """
@@ -219,7 +219,7 @@ def build_p2p_ocel(
         has_slow_approval = random.random() < 0.15
         has_slow_invoice_matching = random.random() < 0.20
 
-        process_value = round(random.uniform(500, 50000), 2)
+        process_value = round(random.uniform(20, 400), 2)
 
         timestamp = base_timestamp + timedelta(
             minutes=random.randint(0, purchase_order_count * 3)
@@ -481,7 +481,7 @@ def build_p2p_ocel(
 
 def save_p2p_ocel(
     base_path: str = "data/p2p_sample",
-    purchase_order_count: int = 2000,
+    purchase_order_count: int = 50000,
     seed: int = 42,
 ) -> None:
     """
@@ -540,7 +540,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--purchase-orders",
         type=int,
-        default=2000,
+        default=50000,
         help="Number of purchase orders to generate.",
     )
 

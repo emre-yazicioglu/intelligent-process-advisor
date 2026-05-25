@@ -132,6 +132,18 @@ def format_currency(value: int | float) -> str:
     return f"€ {int(value):,}".replace(",", ".")
 
 
+def format_count_columns(dataframe: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+    formatted_df = dataframe.copy()
+
+    for column in columns:
+        if column in formatted_df.columns:
+            formatted_df[column] = formatted_df[column].apply(
+                lambda value: format_number(value) if pd.notna(value) else value
+            )
+
+    return formatted_df
+
+
 def show_metric_row(metrics: list[tuple[str, str | int | float]]) -> None:
     columns = st.columns(len(metrics))
 
@@ -315,7 +327,7 @@ def main() -> None:
         with left_col:
             st.subheader("Object Type Distribution")
             st.dataframe(
-                object_type_counts_df,
+                format_count_columns(object_type_counts_df, ["count"]),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -323,7 +335,7 @@ def main() -> None:
         with right_col:
             st.subheader("Automation Decision Cluster Summary")
             st.dataframe(
-                cluster_summary_df,
+                format_count_columns(cluster_summary_df, ["count"]),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -359,7 +371,10 @@ def main() -> None:
 
             st.subheader("Automation Opportunity Ranking")
             st.dataframe(
-                automation_df[display_columns],
+                format_count_columns(
+                    automation_df[display_columns],
+                    ["frequency", "variants_containing_activity"],
+                ),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -386,6 +401,8 @@ def main() -> None:
                         "automation_candidate",
                         "automation_value_driver",
                         "pattern",
+                        "frequency",
+                        "variants_containing_activity",
                         "rework_rate",
                         "bottleneck_risk",
                         "stability_score",
@@ -393,7 +410,10 @@ def main() -> None:
                 )
 
                 st.dataframe(
-                    cluster_opportunities_df[cluster_display_columns],
+                    format_count_columns(
+                        cluster_opportunities_df[cluster_display_columns],
+                        ["frequency", "variants_containing_activity"],
+                    ),
                     use_container_width=True,
                     hide_index=True,
                 )
@@ -553,15 +573,27 @@ def main() -> None:
         st.dataframe(end_activities_df, use_container_width=True, hide_index=True)
 
         st.subheader("Activity Frequency")
-        st.dataframe(activity_frequency_df, use_container_width=True, hide_index=True)
+        st.dataframe(
+            format_count_columns(activity_frequency_df, ["count"]),
+            use_container_width=True,
+            hide_index=True,
+        )
 
         st.subheader("Directly-Follows Relations")
-        st.dataframe(directly_follows_df, use_container_width=True, hide_index=True)
+        st.dataframe(
+            format_count_columns(directly_follows_df, ["count"]),
+            use_container_width=True,
+            hide_index=True,
+        )
 
     with variants_tab:
         st.header("Variant Analysis")
 
-        st.dataframe(variant_summary_df, use_container_width=True, hide_index=True)
+        st.dataframe(
+            format_count_columns(variant_summary_df, ["count"]),
+            use_container_width=True,
+            hide_index=True,
+        )
 
         if not variant_summary_df.empty:
             top = variant_summary_df.iloc[0]
@@ -579,7 +611,14 @@ def main() -> None:
             st.warning("No process performance features were generated.")
         else:
             st.subheader("Activity Performance Signals")
-            st.dataframe(performance_df, use_container_width=True, hide_index=True)
+            st.dataframe(
+                format_count_columns(
+                    performance_df,
+                    ["frequency", "rework_cases", "cases_with_activity", "total_cases"],
+                ),
+                use_container_width=True,
+                hide_index=True,
+            )
 
             st.subheader("High Bottleneck Risk Activities")
 
@@ -591,7 +630,10 @@ def main() -> None:
                 st.info("No high bottleneck risk activities found in the current dataset.")
             else:
                 st.dataframe(
-                    high_bottleneck_df,
+                    format_count_columns(
+                        high_bottleneck_df,
+                        ["frequency", "rework_cases", "cases_with_activity", "total_cases"],
+                    ),
                     use_container_width=True,
                     hide_index=True,
                 )
@@ -606,7 +648,10 @@ def main() -> None:
                 st.info("No low stability activities found in the current dataset.")
             else:
                 st.dataframe(
-                    low_stability_df,
+                    format_count_columns(
+                        low_stability_df,
+                        ["frequency", "rework_cases", "cases_with_activity", "total_cases"],
+                    ),
                     use_container_width=True,
                     hide_index=True,
                 )

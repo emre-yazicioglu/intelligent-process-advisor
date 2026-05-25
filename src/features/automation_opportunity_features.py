@@ -328,7 +328,7 @@ def extract_automation_opportunity_features(
             "bottleneck_risk": bottleneck_risk,
             "stability_score": stability_score,
             "automation_score": automation_score,
-            "automation_candidate": automation_score >= 50,
+            "automation_candidate": automation_score >= 75,
             "recommended_automation_type": recommended_automation_type,
             "automation_value_driver": automation_value_driver,
             "reasoning": reasoning,
