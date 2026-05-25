@@ -25,7 +25,7 @@ class ProcessPerformanceFeatures:
     - variant spread
     - stability
 
-    These signals help prioritize continuous improvement and automation decisions.
+    These signals support automation prioritization and operational improvement.
     """
 
     activity_performance: list[dict[str, Any]]
@@ -51,34 +51,55 @@ def validate_required_columns(
 
 
 def classify_bottleneck_risk(avg_waiting_time_hours: float) -> str:
-    if avg_waiting_time_hours >= 48:
+    """
+    Waiting time after an activity is used as a bottleneck signal.
+
+    This does not prove the activity itself is the root cause, but it indicates
+    that cases tend to wait after this step before progressing.
+    """
+
+    if avg_waiting_time_hours >= 72:
         return "high"
 
-    if avg_waiting_time_hours >= 12:
+    if avg_waiting_time_hours >= 24:
         return "medium"
 
     return "low"
 
 
 def classify_stability_score(
-    rework_percentage: float,
+    rework_rate: float,
     variant_spread: int,
+    average_position_std: float,
 ) -> int:
     """
-    Higher score means more stable and easier to standardize.
+    Higher score means the activity behaves more consistently.
+
+    Stable activities are usually easier to standardize and automate.
+    Low stability may indicate process variation, exception handling,
+    or human judgment requirements.
     """
 
     score = 100
 
-    if rework_percentage >= 30:
-        score -= 40
-    elif rework_percentage >= 10:
+    if rework_rate >= 30:
+        score -= 35
+    elif rework_rate >= 10:
         score -= 20
+    elif rework_rate > 0:
+        score -= 10
 
-    if variant_spread >= 5:
-        score -= 30
-    elif variant_spread >= 3:
+    if variant_spread >= 12:
+        score -= 25
+    elif variant_spread >= 6:
         score -= 15
+    elif variant_spread >= 3:
+        score -= 5
+
+    if average_position_std >= 3:
+        score -= 20
+    elif average_position_std >= 1.5:
+        score -= 10
 
     return max(0, min(score, 100))
 
@@ -89,12 +110,12 @@ def extract_process_performance_features(
     case_object_type: str = "purchase_order",
 ) -> ProcessPerformanceFeatures:
     """
-    Extract process performance signals using one object type as case anchor.
+    Extract process performance signals using one object type as traversal anchor.
 
     For this prototype:
-    - purchase_order is the case anchor
-    - each purchase order becomes one process instance
-    - performance is calculated from the ordered event sequence
+    - purchase_order is used as the traversal anchor
+    - each purchase order creates one PO-based process instance
+    - performance is calculated from ordered event sequences
     """
 
     validate_required_columns(
@@ -138,7 +159,12 @@ def extract_process_performance_features(
         [OBJECT_ID, TIMESTAMP, EVENT_ID]
     ).reset_index(drop=True)
 
+    case_events["activity_position"] = (
+        case_events.groupby(OBJECT_ID).cumcount() + 1
+    )
+
     case_events["next_timestamp"] = case_events.groupby(OBJECT_ID)[TIMESTAMP].shift(-1)
+
     case_events["waiting_time_hours"] = (
         case_events["next_timestamp"] - case_events[TIMESTAMP]
     ).dt.total_seconds() / 3600
@@ -160,6 +186,20 @@ def extract_process_performance_features(
         .reset_index(name="average_waiting_time_hours")
     )
 
+    activity_position = (
+        case_events.groupby(ACTIVITY)["activity_position"]
+        .agg(
+            average_position="mean",
+            average_position_std="std",
+        )
+        .round(2)
+        .reset_index()
+    )
+
+    activity_position["average_position_std"] = (
+        activity_position["average_position_std"].fillna(0)
+    )
+
     activity_rework = (
         case_events.groupby([OBJECT_ID, ACTIVITY])
         .size()
@@ -177,7 +217,7 @@ def extract_process_performance_features(
         .reset_index()
     )
 
-    rework_summary["rework_percentage"] = (
+    rework_summary["rework_rate"] = (
         rework_summary["rework_cases"]
         / rework_summary["cases_with_activity"]
         * 100
@@ -203,14 +243,21 @@ def extract_process_performance_features(
 
     activity_variant_df = pd.DataFrame(activity_variant_rows)
 
-    variant_spread = (
-        activity_variant_df.groupby("activity")["variant"]
-        .nunique()
-        .reset_index(name="variant_spread")
-    )
+    if activity_variant_df.empty:
+        variant_spread = pd.DataFrame(columns=["activity", "variant_spread"])
+    else:
+        variant_spread = (
+            activity_variant_df.groupby("activity")["variant"]
+            .nunique()
+            .reset_index(name="variant_spread")
+        )
 
     performance_df = activity_frequency.merge(
         activity_waiting_time,
+        on=ACTIVITY,
+        how="left",
+    ).merge(
+        activity_position,
         on=ACTIVITY,
         how="left",
     ).merge(
@@ -226,14 +273,35 @@ def extract_process_performance_features(
 
     performance_df = performance_df.drop(columns=["activity"], errors="ignore")
 
-    performance_df["rework_cases"] = performance_df["rework_cases"].fillna(0).astype(int)
+    performance_df["activity"] = performance_df[ACTIVITY]
+
+    performance_df["rework_cases"] = (
+        performance_df["rework_cases"].fillna(0).astype(int)
+    )
+
     performance_df["cases_with_activity"] = (
         performance_df["cases_with_activity"].fillna(0).astype(int)
     )
-    performance_df["rework_percentage"] = (
-        performance_df["rework_percentage"].fillna(0).astype(float)
+
+    performance_df["rework_rate"] = (
+        performance_df["rework_rate"].fillna(0).astype(float)
     )
-    performance_df["variant_spread"] = performance_df["variant_spread"].fillna(0).astype(int)
+
+    performance_df["variant_spread"] = (
+        performance_df["variant_spread"].fillna(0).astype(int)
+    )
+
+    performance_df["average_waiting_time_hours"] = (
+        performance_df["average_waiting_time_hours"].fillna(0).astype(float)
+    )
+
+    performance_df["average_position"] = (
+        performance_df["average_position"].fillna(0).astype(float)
+    )
+
+    performance_df["average_position_std"] = (
+        performance_df["average_position_std"].fillna(0).astype(float)
+    )
 
     performance_df["bottleneck_risk"] = performance_df[
         "average_waiting_time_hours"
@@ -241,19 +309,52 @@ def extract_process_performance_features(
 
     performance_df["stability_score"] = performance_df.apply(
         lambda row: classify_stability_score(
-            rework_percentage=row["rework_percentage"],
+            rework_rate=row["rework_rate"],
             variant_spread=row["variant_spread"],
+            average_position_std=row["average_position_std"],
         ),
         axis=1,
     )
 
     performance_df["total_cases"] = total_cases
 
-    performance_df = performance_df.sort_values(
-        ["bottleneck_risk", "average_waiting_time_hours", "rework_percentage"],
-        ascending=[True, False, False],
+    risk_order = {
+        "high": 3,
+        "medium": 2,
+        "low": 1,
+    }
+
+    performance_df["bottleneck_risk_rank"] = (
+        performance_df["bottleneck_risk"].map(risk_order).fillna(0)
     )
 
+    performance_df = performance_df.sort_values(
+        [
+            "bottleneck_risk_rank",
+            "average_waiting_time_hours",
+            "rework_rate",
+            "variant_spread",
+        ],
+        ascending=[False, False, False, False],
+    )
+
+    performance_df = performance_df.drop(columns=["bottleneck_risk_rank"])
+
+    display_columns = [
+        "activity",
+        "frequency",
+        "average_waiting_time_hours",
+        "bottleneck_risk",
+        "rework_cases",
+        "cases_with_activity",
+        "rework_rate",
+        "variant_spread",
+        "average_position",
+        "average_position_std",
+        "stability_score",
+        "total_cases",
+    ]
+
     return ProcessPerformanceFeatures(
-        activity_performance=performance_df.to_dict(orient="records"),
+        activity_performance=performance_df[display_columns].to_dict(orient="records"),
     )
