@@ -45,11 +45,20 @@ def get_performance_lookup(performance_features: Any | None) -> dict[str, dict[s
         [],
     )
 
-    return {
-        row["activity"]: row
-        for row in activity_performance
-        if isinstance(row, dict) and "activity" in row
-    }
+    lookup: dict[str, dict[str, Any]] = {}
+
+    for row in activity_performance:
+        if not isinstance(row, dict):
+            continue
+
+        activity = row.get("activity") or row.get("ocel:activity")
+
+        if activity is None:
+            continue
+
+        lookup[str(activity)] = row
+
+    return lookup
 
 
 def classify_automation_type(
