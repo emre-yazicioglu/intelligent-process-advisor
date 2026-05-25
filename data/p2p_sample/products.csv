@@ -1,201 +1,201 @@
 product_id,product_name,product_category,unit_price
-product_0001,Product 0001,Logistics,659.21
-product_0002,Product 0002,Logistics,240.23
-product_0003,Product 0003,Services,941.24
-product_0004,Product 0004,IT Hardware,195.05
-product_0005,Product 0005,Logistics,246.84
-product_0006,Product 0006,IT Hardware,1349.41
-product_0007,Product 0007,Services,1421.9
-product_0008,Product 0008,Services,609.29
-product_0009,Product 0009,Office Supplies,336.23
-product_0010,Product 0010,Services,1235.56
-product_0011,Product 0011,Office Supplies,1366.28
-product_0012,Product 0012,Logistics,1276.03
-product_0013,Product 0013,Maintenance,535.41
-product_0014,Product 0014,IT Hardware,1467.92
-product_0015,Product 0015,IT Hardware,665.85
-product_0016,Product 0016,Services,184.84
-product_0017,Product 0017,Logistics,420.02
-product_0018,Product 0018,IT Hardware,1208.42
-product_0019,Product 0019,Maintenance,320.64
-product_0020,Product 0020,Office Supplies,48.38
-product_0021,Product 0021,Office Supplies,1300.91
-product_0022,Product 0022,Services,542.35
-product_0023,Product 0023,IT Hardware,842.06
-product_0024,Product 0024,Logistics,16.52
-product_0025,Product 0025,Logistics,200.75
-product_0026,Product 0026,IT Hardware,999.81
-product_0027,Product 0027,Services,218.65
-product_0028,Product 0028,IT Hardware,1139.51
-product_0029,Product 0029,Maintenance,1400.59
-product_0030,Product 0030,Office Supplies,1213.54
-product_0031,Product 0031,IT Hardware,458.43
-product_0032,Product 0032,IT Hardware,1174.83
-product_0033,Product 0033,IT Hardware,854.26
-product_0034,Product 0034,IT Hardware,1365.22
-product_0035,Product 0035,Logistics,453.01
-product_0036,Product 0036,Logistics,1066.14
-product_0037,Product 0037,Office Supplies,1373.68
-product_0038,Product 0038,Logistics,670.76
-product_0039,Product 0039,Maintenance,904.0
-product_0040,Product 0040,Office Supplies,884.5
-product_0041,Product 0041,Services,1412.35
-product_0042,Product 0042,Office Supplies,413.63
-product_0043,Product 0043,Logistics,960.75
-product_0044,Product 0044,Logistics,362.69
-product_0045,Product 0045,IT Hardware,568.37
-product_0046,Product 0046,IT Hardware,808.32
-product_0047,Product 0047,Maintenance,226.56
-product_0048,Product 0048,Office Supplies,1149.39
-product_0049,Product 0049,Office Supplies,660.52
-product_0050,Product 0050,Logistics,1279.41
-product_0051,Product 0051,Services,539.0
-product_0052,Product 0052,IT Hardware,761.62
-product_0053,Product 0053,Office Supplies,1307.53
-product_0054,Product 0054,Logistics,973.32
-product_0055,Product 0055,Maintenance,1163.27
-product_0056,Product 0056,Services,995.46
-product_0057,Product 0057,IT Hardware,511.45
-product_0058,Product 0058,Logistics,891.71
-product_0059,Product 0059,Office Supplies,89.92
-product_0060,Product 0060,Services,194.66
-product_0061,Product 0061,Maintenance,1094.62
-product_0062,Product 0062,Services,499.23
-product_0063,Product 0063,Logistics,400.08
-product_0064,Product 0064,Services,685.69
-product_0065,Product 0065,IT Hardware,1016.06
-product_0066,Product 0066,Logistics,32.19
-product_0067,Product 0067,Logistics,773.62
-product_0068,Product 0068,Logistics,881.95
-product_0069,Product 0069,IT Hardware,1328.32
-product_0070,Product 0070,Logistics,1108.27
-product_0071,Product 0071,Services,862.44
-product_0072,Product 0072,Logistics,439.28
-product_0073,Product 0073,Logistics,71.2
-product_0074,Product 0074,Logistics,49.88
-product_0075,Product 0075,Maintenance,897.53
-product_0076,Product 0076,Logistics,526.54
-product_0077,Product 0077,Logistics,905.99
-product_0078,Product 0078,Office Supplies,558.72
-product_0079,Product 0079,Logistics,767.37
-product_0080,Product 0080,IT Hardware,1289.62
-product_0081,Product 0081,Services,1137.38
-product_0082,Product 0082,Office Supplies,999.43
-product_0083,Product 0083,Maintenance,663.57
-product_0084,Product 0084,Logistics,457.04
-product_0085,Product 0085,Maintenance,945.1
-product_0086,Product 0086,Maintenance,414.55
-product_0087,Product 0087,Services,1312.08
-product_0088,Product 0088,Logistics,432.97
-product_0089,Product 0089,IT Hardware,198.02
-product_0090,Product 0090,Services,676.59
-product_0091,Product 0091,Logistics,1107.62
-product_0092,Product 0092,Office Supplies,728.97
-product_0093,Product 0093,Maintenance,927.39
-product_0094,Product 0094,IT Hardware,745.26
-product_0095,Product 0095,Logistics,1312.51
-product_0096,Product 0096,Logistics,903.77
-product_0097,Product 0097,Logistics,825.65
-product_0098,Product 0098,Logistics,858.09
-product_0099,Product 0099,Maintenance,698.15
-product_0100,Product 0100,Logistics,1383.81
-product_0101,Product 0101,IT Hardware,660.2
-product_0102,Product 0102,Office Supplies,304.24
-product_0103,Product 0103,Services,517.97
-product_0104,Product 0104,Maintenance,991.9
-product_0105,Product 0105,Maintenance,184.95
-product_0106,Product 0106,Logistics,552.38
-product_0107,Product 0107,Office Supplies,521.82
-product_0108,Product 0108,IT Hardware,1395.89
-product_0109,Product 0109,Maintenance,652.08
-product_0110,Product 0110,Logistics,939.86
-product_0111,Product 0111,IT Hardware,569.65
-product_0112,Product 0112,IT Hardware,1175.54
-product_0113,Product 0113,Office Supplies,741.32
-product_0114,Product 0114,Maintenance,601.98
-product_0115,Product 0115,Office Supplies,1209.85
-product_0116,Product 0116,Logistics,1227.38
-product_0117,Product 0117,IT Hardware,1043.21
-product_0118,Product 0118,Office Supplies,421.69
-product_0119,Product 0119,Maintenance,1360.54
-product_0120,Product 0120,IT Hardware,93.26
-product_0121,Product 0121,Logistics,1440.97
-product_0122,Product 0122,Logistics,837.97
-product_0123,Product 0123,Logistics,536.26
-product_0124,Product 0124,Services,1445.5
-product_0125,Product 0125,Logistics,1386.21
-product_0126,Product 0126,Office Supplies,1437.75
-product_0127,Product 0127,Maintenance,1488.23
-product_0128,Product 0128,Office Supplies,313.27
-product_0129,Product 0129,Maintenance,1052.04
-product_0130,Product 0130,Maintenance,627.99
-product_0131,Product 0131,IT Hardware,845.13
-product_0132,Product 0132,Services,540.62
-product_0133,Product 0133,IT Hardware,459.27
-product_0134,Product 0134,Services,146.57
-product_0135,Product 0135,Services,631.89
-product_0136,Product 0136,IT Hardware,447.62
-product_0137,Product 0137,IT Hardware,715.74
-product_0138,Product 0138,Logistics,1366.97
-product_0139,Product 0139,Maintenance,843.14
-product_0140,Product 0140,Office Supplies,149.3
-product_0141,Product 0141,Services,690.62
-product_0142,Product 0142,Office Supplies,342.37
-product_0143,Product 0143,Services,581.74
-product_0144,Product 0144,IT Hardware,1169.87
-product_0145,Product 0145,Services,1025.66
-product_0146,Product 0146,Office Supplies,1306.81
-product_0147,Product 0147,Maintenance,63.71
-product_0148,Product 0148,Services,1433.94
-product_0149,Product 0149,Services,1475.15
-product_0150,Product 0150,Services,531.89
-product_0151,Product 0151,IT Hardware,1469.48
-product_0152,Product 0152,IT Hardware,559.15
-product_0153,Product 0153,Services,303.39
-product_0154,Product 0154,IT Hardware,148.32
-product_0155,Product 0155,Logistics,1263.42
-product_0156,Product 0156,Office Supplies,75.13
-product_0157,Product 0157,Maintenance,434.7
-product_0158,Product 0158,IT Hardware,920.52
-product_0159,Product 0159,Office Supplies,1032.1
-product_0160,Product 0160,Office Supplies,1064.35
-product_0161,Product 0161,Services,655.81
-product_0162,Product 0162,Maintenance,885.28
-product_0163,Product 0163,Office Supplies,1365.37
-product_0164,Product 0164,Office Supplies,819.58
-product_0165,Product 0165,Maintenance,782.95
-product_0166,Product 0166,IT Hardware,843.8
-product_0167,Product 0167,Services,324.77
-product_0168,Product 0168,Logistics,432.16
-product_0169,Product 0169,Maintenance,784.4
-product_0170,Product 0170,Maintenance,1161.66
-product_0171,Product 0171,Maintenance,612.23
-product_0172,Product 0172,Logistics,1322.21
-product_0173,Product 0173,Office Supplies,1111.33
-product_0174,Product 0174,Services,356.55
-product_0175,Product 0175,Services,1052.05
-product_0176,Product 0176,Office Supplies,447.98
-product_0177,Product 0177,Maintenance,658.1
-product_0178,Product 0178,Maintenance,424.36
-product_0179,Product 0179,Maintenance,467.36
-product_0180,Product 0180,IT Hardware,393.91
-product_0181,Product 0181,Services,299.25
-product_0182,Product 0182,Office Supplies,1144.82
-product_0183,Product 0183,Services,1232.44
-product_0184,Product 0184,Maintenance,367.03
-product_0185,Product 0185,Services,1179.49
-product_0186,Product 0186,Logistics,782.24
-product_0187,Product 0187,Services,716.81
-product_0188,Product 0188,Logistics,416.21
-product_0189,Product 0189,Services,261.46
-product_0190,Product 0190,Maintenance,794.45
-product_0191,Product 0191,IT Hardware,465.87
-product_0192,Product 0192,Logistics,582.19
-product_0193,Product 0193,Services,333.67
-product_0194,Product 0194,Services,928.74
-product_0195,Product 0195,Logistics,381.49
-product_0196,Product 0196,Logistics,502.12
-product_0197,Product 0197,Maintenance,611.03
-product_0198,Product 0198,Office Supplies,302.02
-product_0199,Product 0199,Logistics,25.25
-product_0200,Product 0200,Office Supplies,943.64
+product_0001,Product 0001,Services,723.08
+product_0002,Product 0002,Office Supplies,834.0
+product_0003,Product 0003,Logistics,1379.8
+product_0004,Product 0004,Office Supplies,544.78
+product_0005,Product 0005,IT Hardware,1192.81
+product_0006,Product 0006,Office Supplies,154.49
+product_0007,Product 0007,Maintenance,367.43
+product_0008,Product 0008,Office Supplies,610.35
+product_0009,Product 0009,Maintenance,853.09
+product_0010,Product 0010,Office Supplies,616.58
+product_0011,Product 0011,Logistics,766.55
+product_0012,Product 0012,Services,1381.2
+product_0013,Product 0013,Services,115.65
+product_0014,Product 0014,Services,724.65
+product_0015,Product 0015,Logistics,1279.5
+product_0016,Product 0016,IT Hardware,1261.03
+product_0017,Product 0017,Logistics,447.7
+product_0018,Product 0018,Logistics,1091.37
+product_0019,Product 0019,Office Supplies,1047.43
+product_0020,Product 0020,Services,590.91
+product_0021,Product 0021,Maintenance,292.94
+product_0022,Product 0022,Logistics,876.5
+product_0023,Product 0023,Office Supplies,817.02
+product_0024,Product 0024,IT Hardware,760.18
+product_0025,Product 0025,Services,792.77
+product_0026,Product 0026,Maintenance,172.09
+product_0027,Product 0027,Maintenance,606.08
+product_0028,Product 0028,Office Supplies,1222.16
+product_0029,Product 0029,Office Supplies,1191.49
+product_0030,Product 0030,IT Hardware,908.8
+product_0031,Product 0031,IT Hardware,515.36
+product_0032,Product 0032,IT Hardware,574.89
+product_0033,Product 0033,Office Supplies,450.04
+product_0034,Product 0034,Maintenance,689.9
+product_0035,Product 0035,Logistics,1019.27
+product_0036,Product 0036,Logistics,1003.64
+product_0037,Product 0037,IT Hardware,115.28
+product_0038,Product 0038,Logistics,1326.93
+product_0039,Product 0039,Maintenance,563.16
+product_0040,Product 0040,Logistics,1481.31
+product_0041,Product 0041,Maintenance,536.52
+product_0042,Product 0042,Office Supplies,1393.06
+product_0043,Product 0043,Maintenance,728.89
+product_0044,Product 0044,Logistics,1464.41
+product_0045,Product 0045,IT Hardware,692.45
+product_0046,Product 0046,Office Supplies,529.16
+product_0047,Product 0047,Office Supplies,775.12
+product_0048,Product 0048,Logistics,1404.68
+product_0049,Product 0049,Maintenance,254.76
+product_0050,Product 0050,Services,332.09
+product_0051,Product 0051,Logistics,1003.4
+product_0052,Product 0052,Logistics,638.72
+product_0053,Product 0053,Logistics,171.81
+product_0054,Product 0054,Services,238.76
+product_0055,Product 0055,Office Supplies,1270.36
+product_0056,Product 0056,Services,1235.44
+product_0057,Product 0057,Logistics,735.54
+product_0058,Product 0058,IT Hardware,519.79
+product_0059,Product 0059,Maintenance,676.73
+product_0060,Product 0060,Logistics,1008.3
+product_0061,Product 0061,Maintenance,134.8
+product_0062,Product 0062,Logistics,851.2
+product_0063,Product 0063,Services,1028.27
+product_0064,Product 0064,Office Supplies,1162.82
+product_0065,Product 0065,Logistics,394.78
+product_0066,Product 0066,Logistics,579.02
+product_0067,Product 0067,Services,1266.55
+product_0068,Product 0068,Services,1100.65
+product_0069,Product 0069,Office Supplies,768.78
+product_0070,Product 0070,Office Supplies,563.72
+product_0071,Product 0071,Office Supplies,1273.09
+product_0072,Product 0072,IT Hardware,1213.08
+product_0073,Product 0073,Services,343.35
+product_0074,Product 0074,Maintenance,1433.98
+product_0075,Product 0075,Logistics,962.37
+product_0076,Product 0076,Office Supplies,923.55
+product_0077,Product 0077,Services,1402.22
+product_0078,Product 0078,IT Hardware,1143.21
+product_0079,Product 0079,IT Hardware,1055.68
+product_0080,Product 0080,Services,638.5
+product_0081,Product 0081,Logistics,1329.8
+product_0082,Product 0082,Logistics,1170.18
+product_0083,Product 0083,Maintenance,791.02
+product_0084,Product 0084,Maintenance,1252.29
+product_0085,Product 0085,Maintenance,307.12
+product_0086,Product 0086,IT Hardware,691.69
+product_0087,Product 0087,Services,139.12
+product_0088,Product 0088,IT Hardware,611.85
+product_0089,Product 0089,Logistics,384.02
+product_0090,Product 0090,IT Hardware,998.11
+product_0091,Product 0091,Office Supplies,596.9
+product_0092,Product 0092,Services,752.18
+product_0093,Product 0093,IT Hardware,761.48
+product_0094,Product 0094,Maintenance,1032.92
+product_0095,Product 0095,IT Hardware,520.82
+product_0096,Product 0096,Services,838.59
+product_0097,Product 0097,Maintenance,409.52
+product_0098,Product 0098,IT Hardware,532.6
+product_0099,Product 0099,Logistics,125.1
+product_0100,Product 0100,IT Hardware,878.62
+product_0101,Product 0101,Services,878.77
+product_0102,Product 0102,Services,805.97
+product_0103,Product 0103,Logistics,988.39
+product_0104,Product 0104,IT Hardware,1271.31
+product_0105,Product 0105,Maintenance,440.1
+product_0106,Product 0106,Maintenance,129.05
+product_0107,Product 0107,Office Supplies,221.37
+product_0108,Product 0108,Maintenance,472.34
+product_0109,Product 0109,Logistics,543.23
+product_0110,Product 0110,Office Supplies,1253.66
+product_0111,Product 0111,Services,1022.75
+product_0112,Product 0112,Services,852.91
+product_0113,Product 0113,Office Supplies,978.13
+product_0114,Product 0114,IT Hardware,843.79
+product_0115,Product 0115,IT Hardware,1117.5
+product_0116,Product 0116,Logistics,684.81
+product_0117,Product 0117,Logistics,343.43
+product_0118,Product 0118,IT Hardware,839.28
+product_0119,Product 0119,IT Hardware,65.18
+product_0120,Product 0120,Logistics,972.51
+product_0121,Product 0121,Services,1394.0
+product_0122,Product 0122,Logistics,609.01
+product_0123,Product 0123,IT Hardware,1334.54
+product_0124,Product 0124,Office Supplies,817.69
+product_0125,Product 0125,Logistics,396.74
+product_0126,Product 0126,Services,866.63
+product_0127,Product 0127,Maintenance,1352.63
+product_0128,Product 0128,Maintenance,1164.26
+product_0129,Product 0129,Office Supplies,159.32
+product_0130,Product 0130,Logistics,88.35
+product_0131,Product 0131,IT Hardware,21.74
+product_0132,Product 0132,Maintenance,661.81
+product_0133,Product 0133,IT Hardware,410.15
+product_0134,Product 0134,Office Supplies,1108.61
+product_0135,Product 0135,Logistics,1239.97
+product_0136,Product 0136,Maintenance,902.17
+product_0137,Product 0137,Office Supplies,490.07
+product_0138,Product 0138,IT Hardware,1247.03
+product_0139,Product 0139,Maintenance,413.58
+product_0140,Product 0140,Services,246.54
+product_0141,Product 0141,Logistics,857.05
+product_0142,Product 0142,Services,427.05
+product_0143,Product 0143,Services,759.06
+product_0144,Product 0144,Maintenance,603.62
+product_0145,Product 0145,Services,997.62
+product_0146,Product 0146,Services,1079.91
+product_0147,Product 0147,Maintenance,431.04
+product_0148,Product 0148,Services,1044.0
+product_0149,Product 0149,Logistics,123.04
+product_0150,Product 0150,Office Supplies,129.91
+product_0151,Product 0151,Office Supplies,429.76
+product_0152,Product 0152,Maintenance,62.05
+product_0153,Product 0153,Services,1343.54
+product_0154,Product 0154,Office Supplies,1138.23
+product_0155,Product 0155,IT Hardware,1062.02
+product_0156,Product 0156,Office Supplies,701.14
+product_0157,Product 0157,Office Supplies,507.78
+product_0158,Product 0158,Maintenance,412.84
+product_0159,Product 0159,Office Supplies,578.51
+product_0160,Product 0160,IT Hardware,376.21
+product_0161,Product 0161,Services,1195.07
+product_0162,Product 0162,Services,716.6
+product_0163,Product 0163,Logistics,709.24
+product_0164,Product 0164,Maintenance,250.93
+product_0165,Product 0165,Services,765.29
+product_0166,Product 0166,Maintenance,1101.89
+product_0167,Product 0167,Logistics,760.62
+product_0168,Product 0168,IT Hardware,1110.3
+product_0169,Product 0169,IT Hardware,857.39
+product_0170,Product 0170,Logistics,623.67
+product_0171,Product 0171,Logistics,569.26
+product_0172,Product 0172,Services,426.52
+product_0173,Product 0173,Office Supplies,1476.12
+product_0174,Product 0174,Services,1306.57
+product_0175,Product 0175,Logistics,613.34
+product_0176,Product 0176,IT Hardware,192.35
+product_0177,Product 0177,Maintenance,759.56
+product_0178,Product 0178,Services,1377.81
+product_0179,Product 0179,Maintenance,687.23
+product_0180,Product 0180,Maintenance,794.81
+product_0181,Product 0181,Logistics,353.92
+product_0182,Product 0182,Office Supplies,467.3
+product_0183,Product 0183,Maintenance,1151.66
+product_0184,Product 0184,Office Supplies,923.61
+product_0185,Product 0185,IT Hardware,348.16
+product_0186,Product 0186,Maintenance,1398.9
+product_0187,Product 0187,Services,860.28
+product_0188,Product 0188,Office Supplies,197.57
+product_0189,Product 0189,IT Hardware,379.37
+product_0190,Product 0190,Services,1388.93
+product_0191,Product 0191,Maintenance,1476.66
+product_0192,Product 0192,Logistics,1084.87
+product_0193,Product 0193,Logistics,1476.56
+product_0194,Product 0194,Office Supplies,1298.88
+product_0195,Product 0195,Services,307.55
+product_0196,Product 0196,Services,22.74
+product_0197,Product 0197,Office Supplies,683.65
+product_0198,Product 0198,Maintenance,118.44
+product_0199,Product 0199,Maintenance,489.7
+product_0200,Product 0200,Services,41.8

@@ -27,6 +27,7 @@ from features.automation_opportunity_features import (
 from features.automation_decision_clusters import (
     extract_automation_decision_clusters,
 )
+from features.executive_kpis import calculate_executive_kpis
 from features.process_flow_features import extract_process_flow_features
 from features.process_performance_features import extract_process_performance_features
 from ai.process_advisor import (
@@ -110,7 +111,28 @@ def keep_existing_columns(dataframe: pd.DataFrame, columns: list[str]) -> list[s
     return [column for column in columns if column in dataframe.columns]
 
 
-def show_metric_row(metrics: list[tuple[str, int]]) -> None:
+def format_number(value: int | float) -> str:
+    return f"{int(value):,}".replace(",", ".")
+
+
+def format_percentage(value: int | float) -> str:
+    return f"{float(value):.1f}%"
+
+
+def format_days(value: int | float) -> str:
+    return f"{float(value):.1f}d"
+
+
+def format_currency(value: int | float) -> str:
+    value = float(value)
+
+    if value >= 1_000_000:
+        return f"€ {value / 1_000_000:.1f}M"
+
+    return f"€ {int(value):,}".replace(",", ".")
+
+
+def show_metric_row(metrics: list[tuple[str, str | int | float]]) -> None:
     columns = st.columns(len(metrics))
 
     for column, (label, value) in zip(columns, metrics):
@@ -187,6 +209,14 @@ def main() -> None:
         automation_features=automation_opportunity_features,
     )
 
+    executive_kpis = calculate_executive_kpis(
+        events=events,
+        objects=objects,
+        relations=relations,
+        activity_insights=activity_insights,
+        case_object_type="purchase_order",
+    )
+
     insights_df = build_insights_dataframe(activity_insights.insights)
     automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
     cluster_df = build_cluster_dataframe(automation_decision_clusters.clusters)
@@ -213,29 +243,32 @@ def main() -> None:
     invoices = objects[objects[OBJECT_TYPE] == "invoice"]
     items = objects[objects[OBJECT_TYPE] == "item"]
 
-    automation_candidates = automation_df[
-        automation_df["automation_candidate"] == True
-    ]
+    if not automation_df.empty and "automation_candidate" in automation_df.columns:
+        automation_candidates = automation_df[
+            automation_df["automation_candidate"] == True
+        ]
+    else:
+        automation_candidates = pd.DataFrame()
 
     (
         overview_tab,
+        automation_tab,
+        ai_advisor_tab,
         flow_tab,
         variants_tab,
-        insights_tab,
-        automation_tab,
         performance_tab,
+        insights_tab,
         technical_tab,
-        ai_advisor_tab,
     ) = st.tabs(
         [
             "Overview",
+            "Automation Opportunities",
+            "AI Advisor",
             "Process Flow",
             "Variants",
-            "Insights",
-            "Automation Opportunities",
             "Performance",
+            "Insights",
             "Technical Data",
-            "AI Advisor",
         ]
     )
 
@@ -244,28 +277,34 @@ def main() -> None:
 
         show_metric_row(
             [
-                ("Events", len(events)),
-                ("Activities", events[ACTIVITY].nunique()),
-                ("Objects", len(objects)),
-                ("Object Types", objects[OBJECT_TYPE].nunique()),
+                ("Purchase Orders", format_number(len(purchase_orders))),
+                ("Invoices", format_number(len(invoices))),
+                ("Items", format_number(len(items))),
+                (
+                    "Total Process Value",
+                    format_currency(executive_kpis.total_process_value),
+                ),
             ]
         )
 
         show_metric_row(
             [
-                ("Purchase Orders", len(purchase_orders)),
-                ("Invoices", len(invoices)),
-                ("Items", len(items)),
-                ("Cases", process_flow_features.total_cases),
+                ("Events", format_number(len(events))),
+                ("Activities", format_number(events[ACTIVITY].nunique())),
+                ("Objects", format_number(len(objects))),
+                ("Object Types", format_number(objects[OBJECT_TYPE].nunique())),
             ]
         )
 
         show_metric_row(
             [
-                ("Variants", len(variant_summary_df)),
-                ("Insights", len(insights_df)),
-                ("Automation Candidates", len(automation_candidates)),
-                ("Decision Clusters", len(cluster_summary_df)),
+                (
+                    "Avg Throughput Time",
+                    format_days(executive_kpis.avg_throughput_days),
+                ),
+                ("Variants", format_number(len(variant_summary_df))),
+                ("Automation Rate", format_percentage(executive_kpis.automation_rate)),
+                ("Automation Candidates", format_number(len(automation_candidates))),
             ]
         )
 
@@ -288,42 +327,6 @@ def main() -> None:
                 use_container_width=True,
                 hide_index=True,
             )
-
-    with flow_tab:
-        st.header("Process Flow Analytics")
-
-        st.subheader("Start Activities")
-        st.dataframe(start_activities_df, use_container_width=True, hide_index=True)
-
-        st.subheader("End Activities")
-        st.dataframe(end_activities_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Activity Frequency")
-        st.dataframe(activity_frequency_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Directly-Follows Relations")
-        st.dataframe(directly_follows_df, use_container_width=True, hide_index=True)
-
-    with variants_tab:
-        st.header("Variant Analysis")
-
-        st.dataframe(variant_summary_df, use_container_width=True, hide_index=True)
-
-        if not variant_summary_df.empty:
-            top = variant_summary_df.iloc[0]
-            st.info(f"Most common variant: {top['percentage']}%")
-            st.write(top["variant"])
-
-    with insights_tab:
-        st.header("Activity Insights")
-
-        for _, row in insights_df.iterrows():
-            st.subheader(row.get("activity", "-"))
-            st.write(f"Pattern: {row.get('pattern_label', row.get('pattern', '-'))}")
-            st.write(f"Risk: {row.get('risk', '-')}")
-            st.write(row.get("insight", "-"))
-            st.write(row.get("recommendation", "-"))
-            st.divider()
 
     with automation_tab:
         st.header("Automation Opportunities")
@@ -425,84 +428,6 @@ def main() -> None:
                     st.write(f"- {reason}")
 
                 st.divider()
-
-    with performance_tab:
-        st.header("Process Performance Intelligence")
-
-        st.caption(
-            "Operational pain signals used for continuous improvement and future AI reasoning."
-        )
-
-        if performance_df.empty:
-            st.warning("No process performance features were generated.")
-        else:
-            st.subheader("Activity Performance Signals")
-            st.dataframe(performance_df, use_container_width=True, hide_index=True)
-
-            st.subheader("High Bottleneck Risk Activities")
-
-            high_bottleneck_df = performance_df[
-                performance_df["bottleneck_risk"] == "high"
-            ]
-
-            if high_bottleneck_df.empty:
-                st.info("No high bottleneck risk activities found in the current dataset.")
-            else:
-                st.dataframe(
-                    high_bottleneck_df,
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-            st.subheader("Low Stability Activities")
-
-            low_stability_df = performance_df[
-                performance_df["stability_score"] < 70
-            ]
-
-            if low_stability_df.empty:
-                st.info("No low stability activities found in the current dataset.")
-            else:
-                st.dataframe(
-                    low_stability_df,
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-    with technical_tab:
-        st.header("Technical Data")
-
-        st.subheader("Events")
-        st.dataframe(events, use_container_width=True)
-
-        st.subheader("Objects")
-        st.dataframe(objects, use_container_width=True)
-
-        st.subheader("Relations")
-        st.dataframe(relations, use_container_width=True)
-
-        st.subheader("Interaction Patterns")
-
-        patterns_df = pd.DataFrame(
-            [
-                {"activity": activity, "pattern": pattern}
-                for activity, pattern in interaction_patterns.activity_patterns.items()
-            ]
-        )
-
-        st.dataframe(patterns_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Activity Context Features")
-        st.dataframe(activity_context_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Automation Opportunity Features")
-        st.dataframe(automation_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Automation Decision Cluster Features")
-        st.dataframe(cluster_df, use_container_width=True, hide_index=True)
-
-        st.subheader("Process Performance Features")
-        st.dataframe(performance_df, use_container_width=True, hide_index=True)
 
     with ai_advisor_tab:
         st.header("AI Process Advisor")
@@ -617,6 +542,120 @@ def main() -> None:
 
             st.subheader("Answer")
             st.write(advisor_answer)
+
+    with flow_tab:
+        st.header("Process Flow Analytics")
+
+        st.subheader("Start Activities")
+        st.dataframe(start_activities_df, use_container_width=True, hide_index=True)
+
+        st.subheader("End Activities")
+        st.dataframe(end_activities_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Activity Frequency")
+        st.dataframe(activity_frequency_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Directly-Follows Relations")
+        st.dataframe(directly_follows_df, use_container_width=True, hide_index=True)
+
+    with variants_tab:
+        st.header("Variant Analysis")
+
+        st.dataframe(variant_summary_df, use_container_width=True, hide_index=True)
+
+        if not variant_summary_df.empty:
+            top = variant_summary_df.iloc[0]
+            st.info(f"Most common variant: {top['percentage']}%")
+            st.write(top["variant"])
+
+    with performance_tab:
+        st.header("Process Performance Intelligence")
+
+        st.caption(
+            "Operational pain signals used for continuous improvement and future AI reasoning."
+        )
+
+        if performance_df.empty:
+            st.warning("No process performance features were generated.")
+        else:
+            st.subheader("Activity Performance Signals")
+            st.dataframe(performance_df, use_container_width=True, hide_index=True)
+
+            st.subheader("High Bottleneck Risk Activities")
+
+            high_bottleneck_df = performance_df[
+                performance_df["bottleneck_risk"] == "high"
+            ]
+
+            if high_bottleneck_df.empty:
+                st.info("No high bottleneck risk activities found in the current dataset.")
+            else:
+                st.dataframe(
+                    high_bottleneck_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            st.subheader("Low Stability Activities")
+
+            low_stability_df = performance_df[
+                performance_df["stability_score"] < 70
+            ]
+
+            if low_stability_df.empty:
+                st.info("No low stability activities found in the current dataset.")
+            else:
+                st.dataframe(
+                    low_stability_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+    with insights_tab:
+        st.header("Activity Insights")
+
+        for _, row in insights_df.iterrows():
+            st.subheader(row.get("activity", "-"))
+            st.write(f"Pattern: {row.get('pattern_label', row.get('pattern', '-'))}")
+            st.write(f"Risk: {row.get('risk', '-')}")
+            st.write(row.get("insight", "-"))
+            st.write(row.get("recommendation", "-"))
+            st.divider()
+
+    with technical_tab:
+        st.header("Technical Data")
+
+        st.subheader("Events")
+        st.dataframe(events, use_container_width=True)
+
+        st.subheader("Objects")
+        st.dataframe(objects, use_container_width=True)
+
+        st.subheader("Relations")
+        st.dataframe(relations, use_container_width=True)
+
+        st.subheader("Interaction Patterns")
+
+        patterns_df = pd.DataFrame(
+            [
+                {"activity": activity, "pattern": pattern}
+                for activity, pattern in interaction_patterns.activity_patterns.items()
+            ]
+        )
+
+        st.dataframe(patterns_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Activity Context Features")
+        st.dataframe(activity_context_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Automation Opportunity Features")
+        st.dataframe(automation_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Automation Decision Cluster Features")
+        st.dataframe(cluster_df, use_container_width=True, hide_index=True)
+
+        st.subheader("Process Performance Features")
+        st.dataframe(performance_df, use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":

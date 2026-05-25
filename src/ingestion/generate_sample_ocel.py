@@ -17,6 +17,9 @@ OBJECT_ID = "ocel:oid"
 OBJECT_TYPE = "ocel:type"
 QUALIFIER = "ocel:qualifier"
 
+EXECUTION_MODE = "execution_mode"
+PROCESS_VALUE = "process_value"
+
 
 def build_master_data(
     supplier_count: int = 50,
@@ -69,11 +72,61 @@ def build_master_data(
     }
 
 
+def random_execution_mode(activity: str) -> str:
+    """
+    Assign a synthetic execution mode to each event.
+
+    This makes it possible to calculate automation-related KPIs later.
+    The weights are intentionally different by activity type to make the
+    sample data more realistic than a flat random distribution.
+    """
+
+    mostly_manual_activities = {
+        "Approve Purchase Order",
+        "Request Purchase Order Change",
+        "Update Purchase Order",
+        "Resolve Invoice Mismatch",
+        "Approve Invoice",
+    }
+
+    mostly_automated_activities = {
+        "Create Purchase Order",
+        "Send Purchase Order",
+        "Receive Invoice",
+        "Pay Invoice",
+    }
+
+    ai_assisted_activities = {
+        "Match Invoice",
+    }
+
+    if activity in mostly_manual_activities:
+        weights = [70, 15, 5, 10]
+    elif activity in mostly_automated_activities:
+        weights = [35, 55, 5, 5]
+    elif activity in ai_assisted_activities:
+        weights = [45, 20, 25, 10]
+    else:
+        weights = [55, 30, 5, 10]
+
+    return random.choices(
+        population=[
+            "manual",
+            "automated",
+            "ai_assisted",
+            "human_in_loop",
+        ],
+        weights=weights,
+        k=1,
+    )[0]
+
+
 def add_object(
-    objects: list[dict[str, str]],
+    objects: list[dict[str, Any]],
     object_id: str,
     object_type: str,
     seen_objects: set[tuple[str, str]],
+    process_value: float | None = None,
 ) -> None:
     key = (object_id, object_type)
 
@@ -81,6 +134,7 @@ def add_object(
         objects.append({
             OBJECT_ID: object_id,
             OBJECT_TYPE: object_type,
+            PROCESS_VALUE: process_value,
         })
         seen_objects.add(key)
 
@@ -97,6 +151,7 @@ def add_event(
         EVENT_ID: event_id,
         ACTIVITY: activity,
         TIMESTAMP: timestamp,
+        EXECUTION_MODE: random_execution_mode(activity),
     })
 
     for object_id, object_type, qualifier in related_objects:
@@ -128,6 +183,8 @@ def build_p2p_ocel(
     - delayed invoice matching
     - multiple object types
     - optional master-data-style business objects
+    - synthetic process value
+    - synthetic execution mode
     """
 
     random.seed(seed)
@@ -138,7 +195,7 @@ def build_p2p_ocel(
     cost_centers = master_data["cost_centers"]
 
     events: list[dict[str, Any]] = []
-    objects: list[dict[str, str]] = []
+    objects: list[dict[str, Any]] = []
     relations: list[dict[str, str]] = []
     seen_objects: set[tuple[str, str]] = set()
 
@@ -162,11 +219,19 @@ def build_p2p_ocel(
         has_slow_approval = random.random() < 0.15
         has_slow_invoice_matching = random.random() < 0.20
 
+        process_value = round(random.uniform(500, 50000), 2)
+
         timestamp = base_timestamp + timedelta(
             minutes=random.randint(0, purchase_order_count * 3)
         )
 
-        add_object(objects, po_id, "purchase_order", seen_objects)
+        add_object(
+            objects,
+            po_id,
+            "purchase_order",
+            seen_objects,
+            process_value=process_value,
+        )
         add_object(objects, supplier_id, "supplier", seen_objects)
         add_object(objects, cost_center_id, "cost_center", seen_objects)
 

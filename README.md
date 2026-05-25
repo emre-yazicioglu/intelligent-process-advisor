@@ -2,7 +2,7 @@
 
 AI-Augmented Process Intelligence for Automation Discovery
 
-An AI-augmented Process Intelligence system that analyzes Object-Centric Event Logs (OCEL), generates process analytics and explainable operational insights, provides conversational AI assistant and supports intelligent automation decisions across RPA, AI-assisted automation, human-in-the-loop workflows, and process redesign initiatives.
+An AI-augmented Process Intelligence system that analyzes Object-Centric Event Logs (OCEL), generates process analytics and explainable operational insights, provides a conversational AI assistant, and supports intelligent automation decisions across RPA, AI-assisted automation, human-in-the-loop workflows, and process redesign initiatives.
 
 ---
 
@@ -172,8 +172,6 @@ Potential future extensions include:
 ---
 
 ## Status
-
-Work in progress.
 
 Current focus:
 - improving insight quality and contextual reasoning
