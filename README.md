@@ -153,9 +153,9 @@ Conversational AI-assisted process exploration and executive operational guidanc
 
 ## Demo
 
-Short demo video available on LinkedIn:
+Short demo video available on my LinkedIn:
 
-[LinkedIn Demo Placeholder]
+[View LinkedIn Demo](https://www.linkedin.com/posts/yazicioglu-emre_processintelligence-processmining-dataarchitecture-ugcPost-7465779741674106880-n1ia/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAABp_ZA0BtTkOAuc62TD_LGBGQM00_Bgi6S8)
 
 ---
 
