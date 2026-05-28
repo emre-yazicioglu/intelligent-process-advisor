@@ -105,6 +105,60 @@ Provides dashboard-based process exploration and visualization.
 
 ---
 
+## Dashboard Preview
+
+### Executive Intelligence Overview
+
+High-level operational KPIs, object-centric process metrics, automation indicators, throughput analytics, and executive process intelligence summaries generated from the analytical engine.
+
+![Executive Overview](screenshots/executive_overview.png)
+
+---
+
+### Automation Opportunity Ranking
+
+Rule-based and AI-assisted automation opportunity scoring across process activities using operational indicators such as:
+
+- automation score
+- current automation rate
+- rework rate
+- bottleneck risk
+- process stability
+- activity frequency
+- automation candidate classification
+
+![Automation Opportunity Ranking](screenshots/automation_opportunity_ranking.png)
+
+---
+
+### AI-Assisted Automation Decision Clusters
+
+Automation recommendations grouped into explainable operational clusters across:
+
+- Workflow / RPA automation
+- AI-assisted automation
+- Human-in-the-loop decision support
+
+![Automation Decision Clusters](screenshots/automation_decision_clusters.png)
+
+---
+
+### AI Process Advisor
+
+Conversational AI-assisted process exploration and executive operational guidance powered by structured process intelligence outputs.
+
+![AI Advisor](screenshots/ai_advisor.png)
+
+---
+
+## Demo
+
+Short demo video available on LinkedIn:
+
+[LinkedIn Demo Placeholder]
+
+---
+
 ## Current Dataset
 
 The current prototype uses a synthetic Purchase-to-Pay (P2P) Object-Centric Event Log containing:

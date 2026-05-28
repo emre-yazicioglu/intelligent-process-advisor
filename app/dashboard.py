@@ -230,10 +230,51 @@ def main() -> None:
     )
 
     insights_df = build_insights_dataframe(activity_insights.insights)
-    automation_df = pd.DataFrame(automation_opportunity_features.opportunities)
-    cluster_df = build_cluster_dataframe(automation_decision_clusters.clusters)
-    cluster_summary_df = build_cluster_summary(automation_decision_clusters.clusters)
-    performance_df = pd.DataFrame(process_performance_features.activity_performance)
+
+    automation_df = pd.DataFrame(
+        automation_opportunity_features.opportunities
+    )
+
+    if not automation_df.empty and "execution_mode" in events.columns:
+
+        activity_automation_rate_df = (
+            events.groupby(ACTIVITY)["execution_mode"]
+            .apply(
+                lambda values: (
+                    values.isin(["automated", "ai_assisted"]).mean() * 100
+                )
+            )
+            .round(1)
+            .reset_index(name="automation_rate")
+        )
+
+        automation_df = automation_df.merge(
+            activity_automation_rate_df,
+            left_on="activity",
+            right_on=ACTIVITY,
+            how="left",
+        )
+
+        automation_df = automation_df.drop(
+            columns=[ACTIVITY],
+            errors="ignore",
+        )
+
+        automation_df["automation_rate"] = (
+            automation_df["automation_rate"].fillna(0)
+        )
+
+    cluster_df = build_cluster_dataframe(
+        automation_decision_clusters.clusters
+    )
+
+    cluster_summary_df = build_cluster_summary(
+        automation_decision_clusters.clusters
+    )
+
+    performance_df = pd.DataFrame(
+        process_performance_features.activity_performance
+    )
 
     pattern_summary_df = build_pattern_summary(insights_df)
     object_type_counts_df = build_object_type_counts(objects)
@@ -356,6 +397,7 @@ def main() -> None:
                     "activity",
                     "pattern",
                     "automation_score",
+                    "automation_rate",
                     "automation_candidate",
                     "recommended_automation_type",
                     "automation_value_driver",
@@ -397,6 +439,7 @@ def main() -> None:
                     [
                         "activity",
                         "automation_score",
+                        "automation_rate",
                         "recommended_automation_type",
                         "automation_candidate",
                         "automation_value_driver",
